@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from types import SimpleNamespace
-
 import numpy as np
 import pytest
 
@@ -73,25 +71,20 @@ def test_tta_is_gated_on_detected_drift() -> None:
     assert tta_enabled(config, "severe") is False
 
 
-def test_api_budget_compares_confidence_with_calibrated_threshold(tmp_path) -> None:
-    from backend.app.api.routes import predictions
+def test_budget_verdict_compares_confidence_with_the_calibrated_threshold(tmp_path) -> None:
+    from aether.routing.risk_control import budget_verdict
 
+    artifact = tmp_path / "calibration" / "acceptance_thresholds.json"
     threshold_artifact(
-        {"lightweight": {0.10: 0.80}, "advanced": {0.10: 0.50}},
-        tmp_path / "calibration" / "acceptance_thresholds.json",
+        {"lightweight": {0.10: 0.80}, "advanced": {0.10: 0.50}}, artifact
     )
-    config = SimpleNamespace(artifacts_root=tmp_path)
-    result = SimpleNamespace(
-        advanced=None, action="ACCEPT", probabilities=[0.02] * 9 + [0.91]
-    )
-    budget = predictions._risk_budget(result, 0.10, config)
-    assert budget["tier"] == "lightweight"
-    assert budget["threshold"] == pytest.approx(0.80)
-    assert budget["meets_threshold"] is True
+    verdict = budget_verdict(0.91, 0.10, "lightweight", artifact)
+    assert verdict["threshold"] == pytest.approx(0.80)
+    assert verdict["meets_threshold"] is True
 
-    escalated = SimpleNamespace(
-        advanced={"prediction": None}, action="ACCEPT", probabilities=[0.55] + [0.05] * 9
-    )
-    budget = predictions._risk_budget(escalated, 0.10, config)
-    assert budget["tier"] == "advanced"
-    assert budget["meets_threshold"] is True
+    escalated = budget_verdict(0.55, 0.10, "advanced", artifact)
+    assert escalated["tier"] == "advanced"
+    assert escalated["meets_threshold"] is True
+
+    missed = budget_verdict(0.42, 0.10, "advanced", artifact)
+    assert missed["meets_threshold"] is False

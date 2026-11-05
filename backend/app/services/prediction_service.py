@@ -10,6 +10,7 @@ import numpy as np
 from sqlalchemy.orm import Session
 
 from aether.config import AetherConfig
+from aether.errors import InvalidInputError
 from aether.monitoring.events import prediction_event, routing_event
 from aether.monitoring.metrics import METRICS
 from aether.pipeline import InferenceResult, ReliabilityPipeline
@@ -47,9 +48,30 @@ class PredictionService:
         request_id: str | None = None,
         raw_payloads: list[bytes] | None = None,
         persist_image: bool = True,
+        error_budget: float | None = None,
     ) -> list[tuple[InferenceResult, str | None]]:
         """Predict a batch and persist predictions, decisions, diagnostics and review cases."""
         results = self.pipeline.predict_batch(images)
+        if error_budget is not None:
+            from aether.routing.risk_control import budget_verdict
+
+            artifact = self.config.artifacts_root / "calibration" / "acceptance_thresholds.json"
+            for result in results:
+                answered_advanced = result.advanced is not None and result.action == "ACCEPT"
+                tier = "advanced" if answered_advanced else "lightweight"
+                try:
+                    verdict = budget_verdict(
+                        max(result.probabilities), error_budget, tier, artifact
+                    )
+                except (OSError, ValueError) as exc:
+                    raise InvalidInputError(
+                        "acceptance thresholds are not calibrated; run `make stability` to "
+                        f"produce {artifact}"
+                    ) from exc
+                result.risk_budget = verdict
+                # The decision JSON is the audited trail, so the requested budget lives there
+                # rather than only in the HTTP response.
+                result.decision["risk_budget"] = verdict
         output: list[tuple[InferenceResult, str | None]] = []
         drift_recorded = False
         for index, result in enumerate(results):

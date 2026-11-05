@@ -308,3 +308,65 @@ INFO:     127.0.0.1:39710 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
 INFO:     127.0.0.1:40252 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
 11:37:23 INFO    aether.api [7b77670b9e844b0d] request method=GET ms=5.93 path=/api/v1/system/status status=200
 INFO:     127.0.0.1:40260 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+12:47:47 INFO    aether.api [032f8d823dd14291] request method=GET ms=2.92 path=/health status=200
+INFO:     127.0.0.1:44686 - "GET /health HTTP/1.1" 200 OK
+12:47:49 INFO    aether.api [581b68541cc0463e] request method=GET ms=2.6 path=/health status=200
+INFO:     127.0.0.1:54110 - "GET /health HTTP/1.1" 200 OK
+12:47:51 INFO    aether.api [a5e3435b273b45f7] request method=GET ms=3.11 path=/health status=200
+INFO:     127.0.0.1:54120 - "GET /health HTTP/1.1" 200 OK
+12:47:53 INFO    aether.api [aec02a7abf7a43b4] request method=GET ms=2.37 path=/health status=200
+INFO:     127.0.0.1:54124 - "GET /health HTTP/1.1" 200 OK
+12:47:55 INFO    aether.api [74919867d5d1478f] request method=GET ms=3.17 path=/health status=200
+INFO:     127.0.0.1:54138 - "GET /health HTTP/1.1" 200 OK
+12:47:57 INFO    aether.api [d3c56d961fb948f0] request method=GET ms=3.06 path=/health status=200
+INFO:     127.0.0.1:54144 - "GET /health HTTP/1.1" 200 OK
+12:47:59 INFO    aether.api [7a131987b0f447db] request method=GET ms=2.97 path=/health status=200
+INFO:     127.0.0.1:45372 - "GET /health HTTP/1.1" 200 OK
+12:48:01 INFO    aether.api [cc2c862bcc3a43a2] request method=GET ms=3.14 path=/health status=200
+INFO:     127.0.0.1:45376 - "GET /health HTTP/1.1" 200 OK
+12:48:03 INFO    aether.api [701703bc1c794ae6] request method=GET ms=3.04 path=/health status=200
+INFO:     127.0.0.1:45384 - "GET /health HTTP/1.1" 200 OK
+12:48:05 INFO    aether.api [f0bae97fd80a48bc] request method=GET ms=3.05 path=/health status=200
+INFO:     127.0.0.1:45386 - "GET /health HTTP/1.1" 200 OK
+12:48:07 INFO    aether.api [8c5e141e877f4ff1] request method=GET ms=3.03 path=/health status=200
+INFO:     127.0.0.1:45392 - "GET /health HTTP/1.1" 200 OK
+12:48:09 INFO    aether.api [2abad69a942142dd] request method=GET ms=3.1 path=/health status=200
+INFO:     127.0.0.1:57448 - "GET /health HTTP/1.1" 200 OK
+12:48:11 INFO    aether.api [77ce96ebb8464e67] request method=GET ms=3.04 path=/health status=200
+INFO:     127.0.0.1:57464 - "GET /health HTTP/1.1" 200 OK
+12:48:13 INFO    aether.api [fabb177f000a4027] request method=GET ms=3.47 path=/health status=200
+INFO:     127.0.0.1:57470 - "GET /health HTTP/1.1" 200 OK
+12:48:15 INFO    aether.api [6948eaca2ded4343] request method=GET ms=3.05 path=/health status=200
+INFO:     127.0.0.1:57474 - "GET /health HTTP/1.1" 200 OK
+12:48:17 INFO    aether.api [da44a887d18d4c41] request method=GET ms=3.07 path=/health status=200
+INFO:     127.0.0.1:43208 - "GET /health HTTP/1.1" 200 OK
+12:48:19 INFO    aether.api [301c87446e5f49e7] request method=GET ms=3.33 path=/health status=200
+INFO:     127.0.0.1:43222 - "GET /health HTTP/1.1" 200 OK
+12:48:21 INFO    aether.api [33162e12cfb94bd1] request method=GET ms=3.09 path=/health status=200
+INFO:     127.0.0.1:43232 - "GET /health HTTP/1.1" 200 OK
+12:48:23 INFO    aether.api [6e27f448a4044233] request method=GET ms=2.91 path=/health status=200
+INFO:     127.0.0.1:43244 - "GET /health HTTP/1.1" 200 OK
+12:48:25 INFO    aether.api [98004d028a71454a] request method=GET ms=2.87 path=/health status=200
+INFO:     127.0.0.1:43252 - "GET /health HTTP/1.1" 200 OK
+12:48:27 INFO    aether.api [b855420d7b454ee2] request method=GET ms=3.26 path=/health status=200
+INFO:     127.0.0.1:60996 - "GET /health HTTP/1.1" 200 OK
+12:48:29 INFO    aether.api [faa1b06762bb4f58] request method=GET ms=2.85 path=/health status=200
+INFO:     127.0.0.1:32772 - "GET /health HTTP/1.1" 200 OK
+12:48:32 INFO    aether.api [c833eb55679b4aa6] request method=GET ms=2.86 path=/health status=200
+INFO:     127.0.0.1:32786 - "GET /health HTTP/1.1" 200 OK
+12:48:34 INFO    aether.api [6f800d98d20e441d] request method=GET ms=2.99 path=/health status=200
+INFO:     127.0.0.1:32798 - "GET /health HTTP/1.1" 200 OK
+12:48:36 INFO    aether.api [dbc2cce1501e4d7e] request method=GET ms=2.88 path=/health status=200
+INFO:     127.0.0.1:32802 - "GET /health HTTP/1.1" 200 OK
+12:48:38 INFO    aether.api [9b1072dd00dd4300] request method=GET ms=3.53 path=/health status=200
+INFO:     127.0.0.1:55350 - "GET /health HTTP/1.1" 200 OK
+12:48:40 INFO    aether.api [250890a4c71e4785] request method=GET ms=2.81 path=/health status=200
+INFO:     127.0.0.1:55354 - "GET /health HTTP/1.1" 200 OK
+12:48:42 INFO    aether.api [4ae258bdddbf4887] request method=GET ms=2.99 path=/health status=200
+INFO:     127.0.0.1:55370 - "GET /health HTTP/1.1" 200 OK
+12:48:44 INFO    aether.api [dc10a2aa9aaf4488] request method=GET ms=4.18 path=/health status=200
+INFO:     127.0.0.1:55376 - "GET /health HTTP/1.1" 200 OK
+12:48:46 INFO    aether.api [bfc87866b6b54797] request method=GET ms=3.08 path=/health status=200
+INFO:     127.0.0.1:55388 - "GET /health HTTP/1.1" 200 OK
+12:49:18 INFO    aether.api [a0ac568d73894281] request method=GET ms=3.13 path=/health status=200
+INFO:     127.0.0.1:42990 - "GET /health HTTP/1.1" 200 OK

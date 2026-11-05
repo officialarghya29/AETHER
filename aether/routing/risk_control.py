@@ -175,6 +175,39 @@ def threshold_for(table: ThresholdTable, tier: str, alpha: float) -> tuple[float
     return chosen, float(table.tiers[tier][f"{chosen:g}"])
 
 
+_TABLE_CACHE: dict[str, tuple[float | None, ThresholdTable]] = {}
+
+
+def cached_thresholds(path: str | Path) -> ThresholdTable:
+    """Load the threshold ladder once per file version, for serving paths."""
+    artifact = Path(path)
+    key = str(artifact)
+    mtime = artifact.stat().st_mtime if artifact.exists() else None
+    cached = _TABLE_CACHE.get(key)
+    if cached is not None and cached[0] == mtime:
+        return cached[1]
+    table = load_thresholds(artifact)
+    _TABLE_CACHE[key] = (mtime, table)
+    return table
+
+
+def budget_verdict(
+    confidence: float, alpha: float, tier: str, path: str | Path
+) -> dict[str, Any]:
+    """Compare a served confidence with the calibrated threshold for a requested budget."""
+    table = cached_thresholds(path)
+    used_alpha, threshold = threshold_for(table, tier, alpha)
+    return {
+        "requested_alpha": round(float(alpha), 4),
+        "alpha": used_alpha,
+        "threshold": round(threshold, 4),
+        "tier": tier,
+        "confidence": round(float(confidence), 4),
+        "meets_threshold": bool(confidence >= threshold),
+        "generated_at": table.generated_at,
+    }
+
+
 def threshold_artifact(
     table: dict[str, dict[float, float]], path: str | Path
 ) -> dict[str, Any]:

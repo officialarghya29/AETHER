@@ -7,6 +7,9 @@ project adheres to semantic versioning.
 
 ### Changed
 
+- The packaging classifier now says proprietary instead of MIT, matching the
+  repository licence.
+
 - **Licence is now proprietary.** All rights reserved by Arghya Bose; the MIT grant was removed and
   the README, package metadata and dashboard package now state the same terms.
 - **README is now evidence-first.** It carries generated figures (`experiments/make_figures.py`),
@@ -35,6 +38,10 @@ project adheres to semantic versioning.
   completed before paint; the chart is now drawn without animation.
 
 ### Added
+
+- **Budget audit trail**: the requested error budget is computed inside the prediction service
+  and stored in the persisted decision record, so budgeted traffic can be reviewed after the
+  fact rather than only in the HTTP response.
 
 - **Error-budget panel and TTA audit trail**: the live-inference page can request a budget and
   shows the calibrated threshold verdict, and the routing timeline marks decisions whose

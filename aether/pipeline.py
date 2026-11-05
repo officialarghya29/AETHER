@@ -77,6 +77,7 @@ class InferenceResult:
     input_size: int
     created_at: str = ""
     latency_ms: float = 0.0
+    risk_budget: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -101,6 +102,7 @@ class InferenceResult:
             "input_size": self.input_size,
             "created_at": self.created_at,
             "latency_ms": round(self.latency_ms, 3),
+            "risk_budget": self.risk_budget,
         }
 
 

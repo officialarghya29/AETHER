@@ -228,6 +228,9 @@ def test_predict_returns_the_calibrated_risk_budget(client, api_config):
     assert budget["tier"] in ("lightweight", "advanced")
     assert budget["meets_threshold"] is False
 
+    audited = client.get("/api/v1/routing/decisions").json()["items"][0]
+    assert audited["risk_budget"]["requested_alpha"] == 0.05
+
 
 def test_missing_budget_artifact_is_reported_clearly(client):
     response = client.post(

@@ -357,6 +357,10 @@ and `POST /api/v1/predict?error_budget=0.05` returns the threshold alongside the
                 "confidence": 0.941, "meets_threshold": true}
 ```
 
+<img src="docs/assets/dashboard-budget.png" alt="Live inference with a 0.05 error budget: calibrated threshold, served confidence and budget verdict" width="100%" />
+
+The panel is the real dashboard against the running API, not a mock: this prediction's confidence (0.292) sits below the 0.05-budget threshold (0.883), so the verdict says so instead of implying the answer is trustworthy.
+
 Budgets are answered from the calibrated ladder, not interpolated: an unsupported request reports
 the nearest fitted budget and the threshold it used. A model returning non-finite logits raises
 instead of being served, and the stability study reproduces every number above.

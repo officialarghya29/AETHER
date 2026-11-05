@@ -94,6 +94,7 @@ def routing_decisions(
                 "test_time_augmentation": bool(
                     (prediction_decision or {}).get("test_time_augmentation", False)
                 ),
+                "risk_budget": (prediction_decision or {}).get("risk_budget"),
                 "created_at": row.created_at.isoformat(),
             }
             for row, prediction_decision in rows
