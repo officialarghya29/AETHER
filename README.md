@@ -192,7 +192,7 @@ and automobile ↔ truck.
 ### 1 · temperature scaling
 
 $$
-p_i = \operatorname{softmax}\!\left(\frac{z_i}{T}\right), \qquad
+p_i = \mathrm{softmax}\!\left(\frac{z_i}{T}\right), \qquad
 T^{\star} = \arg\min_T \; -\sum_{n=1}^{N} \log p_{y_n}(x_n; T)
 $$
 
@@ -255,7 +255,7 @@ time.
 $$
 P(\text{wrong} \mid x) = \sigma\!\left(w^\top \phi(x) + b\right),
 \qquad
-\phi(x) = [\,H,\ \mathrm{MSP},\ m,\ \mathbb{1}_{\text{shift}},\, \mathbb{1}_{\text{disagree}}\,]
+\phi(x) = [\,H,\ \mathrm{MSP},\ m,\ \mathbf{1}_{\text{shift}},\, \mathbf{1}_{\text{disagree}}\,]
 $$
 
 Fitted with L2-regularised logistic regression on the calibration split. The first-call and pre-call

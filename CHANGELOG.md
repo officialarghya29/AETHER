@@ -15,6 +15,11 @@ project adheres to semantic versioning.
 
 ### Fixed
 
+- **README math render.** GitHub's KaTeX sandbox rejects `\operatorname`, which turned the
+  temperature-scaling display block into an error box. The formula now uses `\mathrm{softmax}`
+  (and `\mathbf{1}` for the indicator), and `tests/test_readme_math.py` fails the suite if a
+  GitHub-blocked macro ever reappears.
+
 - **Efficiency pass.** The calibration artifact was re-read and re-parsed on every prediction;
   it is now cached by modification time and size. The risk feature vector is built once and shared
   by both first-call heads, drift bookkeeping reuses the calibrated uncertainty, channel means are
