@@ -3,7 +3,7 @@
 <p align="center">
   <img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-a855f7?style=flat-square" />
   <img alt="python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-22d3ee?style=flat-square" />
-  <img alt="tests 98 passing" src="https://img.shields.io/badge/tests-%20passing-a3e635?style=flat-square" />
+  <img alt="tests 99 passing" src="https://img.shields.io/badge/tests-99%20passing-a3e635?style=flat-square" />
   <img alt="mypy clean" src="https://img.shields.io/badge/mypy-52%20modules%20clean-22d3ee?style=flat-square" />
   <img alt="torch 2.13 cpu" src="https://img.shields.io/badge/torch-2.13%20%C2%B7%20cpu-fbbf24?style=flat-square" />
 </p>
@@ -383,7 +383,7 @@ database, never hardcoded.
 | serving | FastAPI, SQLAlchemy 2, Alembic, SQLite / PostgreSQL |
 | dashboard | React 18, TypeScript, Vite, recharts, Tailwind |
 | ops | Docker Compose, nginx, GitHub Actions |
-| quality | pytest ( passing), ruff clean, mypy clean over `aether/` (52 modules) |
+| quality | pytest (99 passing), ruff clean, mypy clean over `aether/` (52 modules) |
 
 ## quickstart
 
