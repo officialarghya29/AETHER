@@ -127,6 +127,18 @@ def routing_metrics(session: SessionDep) -> RoutingMetrics:
     }
     mean_risk = float(session.scalar(select(func.avg(RoutingDecisionModel.risk))) or 0.0)
     mean_latency = float(session.scalar(select(func.avg(PredictionModel.latency_ms))) or 0.0)
+    budgeted = 0
+    misses = 0
+    tta_calls = 0
+    for decision in session.scalars(select(PredictionModel.decision)):
+        if not decision:
+            continue
+        budget = decision.get("risk_budget")
+        if budget:
+            budgeted += 1
+            misses += 0 if budget.get("meets_threshold") else 1
+        if decision.get("test_time_augmentation"):
+            tta_calls += 1
     return RoutingMetrics(
         total=total,
         action_distribution=distribution,
@@ -135,6 +147,10 @@ def routing_metrics(session: SessionDep) -> RoutingMetrics:
         escalation_rate=round(distribution.get("ESCALATE", 0) / total, 4),
         abstention_rate=round(distribution.get("ABSTAIN", 0) / total, 4),
         review_rate=round(distribution.get("HUMAN_REVIEW", 0) / total, 4),
+        budgeted_total=budgeted,
+        budget_misses=misses,
+        budget_miss_rate=round(misses / budgeted, 4) if budgeted else 0.0,
+        tta_calls=tta_calls,
     )
 
 

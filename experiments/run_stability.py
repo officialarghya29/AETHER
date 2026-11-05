@@ -42,6 +42,7 @@ from aether.routing.risk_control import (  # noqa: E402
 from aether.uncertainty.calibration import apply_temperature  # noqa: E402
 
 REPORTS = ROOT / "artifacts" / "reports"
+SNAPSHOT = ROOT / "docs" / "data" / "stability-snapshot.json"
 ARTIFACT = ROOT / "artifacts" / "calibration" / "acceptance_thresholds.json"
 BENCHMARKS = REPORTS / "benchmarks.json"
 ALPHAS = (0.20, 0.10, 0.05, 0.02)
@@ -300,8 +301,55 @@ def main() -> None:
     (REPORTS / "stability.json").write_text(json.dumps(report, indent=2))
     payload = threshold_artifact(thresholds, ARTIFACT)
     write_markdown(report)
+    write_snapshot(report)
     print(f"wrote {REPORTS / 'stability.json'}, STABILITY.md and {ARTIFACT}")
     print(f"calibrated budgets: {sorted(payload['tiers'])}")
+
+
+def write_snapshot(report: dict[str, Any]) -> None:
+    """Record the headline numbers so CI can fail when the README drifts from them."""
+    payload: dict[str, Any] = {
+        "generated_at": report["generated_at"],
+        "risk_control": {
+            tier: [
+                {
+                    "alpha": row["alpha"],
+                    "threshold": row["threshold"],
+                    "clean_coverage": row["routing_dev_clean"]["coverage"],
+                    "clean_error": row["routing_dev_clean"]["selective_error"],
+                    "corrupted_error": row["routing_dev_corrupted"]["selective_error"],
+                }
+                for row in rows
+            ]
+            for tier, rows in report["risk_control"].items()
+        },
+        "severity_sweep": [
+            {
+                "tier": entry["tier"],
+                "alpha": entry["alpha"],
+                "streams": [
+                    {
+                        "severity": stream["severity"],
+                        "coverage": stream["coverage"],
+                        "error": stream["selective_error"],
+                    }
+                    for stream in entry["streams"]
+                ],
+            }
+            for entry in report["severity_sweep"]
+        ],
+        "tta": {
+            name: {
+                "identity": report["tta"][name]["identity_accuracy"],
+                "tta": report["tta"][name]["tta_accuracy"],
+                "delta": report["tta"][name]["delta"],
+            }
+            for name in ("clean", "corrupted_gaussian_noise_severity_3")
+            if report["tta"].get("available")
+        },
+    }
+    SNAPSHOT.parent.mkdir(parents=True, exist_ok=True)
+    SNAPSHOT.write_text(json.dumps(payload, indent=2))
 
 
 def write_markdown(report: dict[str, Any]) -> None:

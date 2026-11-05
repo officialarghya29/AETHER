@@ -3,7 +3,7 @@
 <p align="center">
   <img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-a855f7?style=flat-square" />
   <img alt="python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-22d3ee?style=flat-square" />
-  <img alt="tests 123 passing" src="https://img.shields.io/badge/tests-123%20passing-a3e635?style=flat-square" />
+  <img alt="tests 123 passing" src="https://img.shields.io/badge/tests-124%20passing-a3e635?style=flat-square" />
   <img alt="mypy clean" src="https://img.shields.io/badge/mypy-52%20modules%20clean-22d3ee?style=flat-square" />
   <img alt="torch 2.13 cpu" src="https://img.shields.io/badge/torch-2.13%20%C2%B7%20cpu-fbbf24?style=flat-square" />
 </p>
@@ -347,6 +347,10 @@ clean windows versus 100% of severity-3 noisy windows
 using the detector's measured rates — clean traffic keeps single-pass latency. `routing.tta: true`
 turns it on; `routing.tta_on_drift: false` makes every escalated request pay for it.
 
+<img src="docs/assets/dashboard-tta.png" alt="Routing intelligence showing budget-miss and mirror-pass tiles and decisions tagged mirror TTA" width="100%" />
+
+<sub>Routing intelligence with budget and mirror-pass tiles. This capture ran with `routing.tta_on_drift` off so every paid mirror pass is tagged; the production default only pays for the pass on a flagged drift window. The 74 decisions include 13 tagged passes and one budgeted prediction that missed its budget.</sub>
+
 ### asking for a budget over the API
 
 The calibrated ladder ships as `artifacts/calibration/acceptance_thresholds.json` (`make stability`),
@@ -461,7 +465,7 @@ database, never hardcoded.
 | serving | FastAPI, SQLAlchemy 2, Alembic, SQLite / PostgreSQL |
 | dashboard | React 18, TypeScript, Vite, recharts, Tailwind |
 | ops | Docker Compose, nginx, GitHub Actions |
-| quality | pytest (123 passing), ruff clean, mypy clean over `aether/` (52 modules) |
+| quality | pytest (124 passing), ruff clean, mypy clean over `aether/` (52 modules) |
 
 ## quickstart
 

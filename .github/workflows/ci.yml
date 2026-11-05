@@ -26,6 +26,8 @@ jobs:
         run: python -m ruff check aether backend training experiments tests scripts
       - name: Type check
         run: python -m mypy aether
+      - name: Readme numbers match the stability snapshot
+        run: python experiments/check_docs.py
       - name: Tests
         run: python -m pytest --maxfail=1
 

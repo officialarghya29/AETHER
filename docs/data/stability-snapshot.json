@@ -1,0 +1,163 @@
+{
+  "generated_at": "2026-11-05T07:02:29Z",
+  "risk_control": {
+    "lightweight": [
+      {
+        "alpha": 0.2,
+        "threshold": 0.3111,
+        "clean_coverage": 0.9885,
+        "clean_error": 0.2059,
+        "corrupted_error": 0.6926
+      },
+      {
+        "alpha": 0.1,
+        "threshold": 0.7158,
+        "clean_coverage": 0.6935,
+        "clean_error": 0.0966,
+        "corrupted_error": 0.5774
+      },
+      {
+        "alpha": 0.05,
+        "threshold": 0.883,
+        "clean_coverage": 0.5075,
+        "clean_error": 0.0502,
+        "corrupted_error": 0.4249
+      },
+      {
+        "alpha": 0.02,
+        "threshold": 0.9689,
+        "clean_coverage": 0.2755,
+        "clean_error": 0.02,
+        "corrupted_error": 0.2292
+      }
+    ],
+    "advanced": [
+      {
+        "alpha": 0.2,
+        "threshold": 0.3218,
+        "clean_coverage": 0.999,
+        "clean_error": 0.0656,
+        "corrupted_error": 0.3538
+      },
+      {
+        "alpha": 0.1,
+        "threshold": 0.3218,
+        "clean_coverage": 0.999,
+        "clean_error": 0.0656,
+        "corrupted_error": 0.3538
+      },
+      {
+        "alpha": 0.05,
+        "threshold": 0.5344,
+        "clean_coverage": 0.987,
+        "clean_error": 0.0562,
+        "corrupted_error": 0.3067
+      },
+      {
+        "alpha": 0.02,
+        "threshold": 0.9474,
+        "clean_coverage": 0.8685,
+        "clean_error": 0.0184,
+        "corrupted_error": 0.1339
+      }
+    ]
+  },
+  "severity_sweep": [
+    {
+      "tier": "lightweight",
+      "alpha": 0.1,
+      "streams": [
+        {
+          "severity": 1,
+          "coverage": 0.566,
+          "error": 0.9081
+        },
+        {
+          "severity": 3,
+          "coverage": 0.382,
+          "error": 0.8796
+        },
+        {
+          "severity": 5,
+          "coverage": 0.213,
+          "error": 0.8732
+        }
+      ]
+    },
+    {
+      "tier": "lightweight",
+      "alpha": 0.05,
+      "streams": [
+        {
+          "severity": 1,
+          "coverage": 0.364,
+          "error": 0.9066
+        },
+        {
+          "severity": 3,
+          "coverage": 0.175,
+          "error": 0.8914
+        },
+        {
+          "severity": 5,
+          "coverage": 0.066,
+          "error": 0.8636
+        }
+      ]
+    },
+    {
+      "tier": "advanced",
+      "alpha": 0.1,
+      "streams": [
+        {
+          "severity": 1,
+          "coverage": 0.999,
+          "error": 0.9209
+        },
+        {
+          "severity": 3,
+          "coverage": 0.98,
+          "error": 0.9082
+        },
+        {
+          "severity": 5,
+          "coverage": 0.933,
+          "error": 0.8971
+        }
+      ]
+    },
+    {
+      "tier": "advanced",
+      "alpha": 0.05,
+      "streams": [
+        {
+          "severity": 1,
+          "coverage": 0.965,
+          "error": 0.9212
+        },
+        {
+          "severity": 3,
+          "coverage": 0.827,
+          "error": 0.9178
+        },
+        {
+          "severity": 5,
+          "coverage": 0.556,
+          "error": 0.8975
+        }
+      ]
+    }
+  ],
+  "tta": {
+    "clean": {
+      "identity": 0.9335,
+      "tta": 0.9435,
+      "delta": 0.01
+    },
+    "corrupted_gaussian_noise_severity_3": {
+      "identity": 0.635,
+      "tta": 0.645,
+      "delta": 0.01
+    }
+  }
+}

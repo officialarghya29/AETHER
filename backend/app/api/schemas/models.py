@@ -216,6 +216,10 @@ class RoutingMetrics(BaseModel):
     escalation_rate: float
     abstention_rate: float
     review_rate: float
+    budgeted_total: int = 0
+    budget_misses: int = 0
+    budget_miss_rate: float = 0.0
+    tta_calls: int = 0
 
 
 class ExperimentResponse(BaseModel):

@@ -138,7 +138,7 @@ orchestrated here*.
 single `main` branch.
 
 **Verified locally:** `ruff check` clean, `mypy aether` clean over 52 modules (pydantic plugin
-enabled), `pytest` 123 passing. **Not verified:** the workflow itself has not executed on GitHub
+enabled), `pytest` 124 passing. **Not verified:** the workflow itself has not executed on GitHub
 Actions from this machine.
 
 ## Honest summary

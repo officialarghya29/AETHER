@@ -199,6 +199,24 @@ def test_metrics_summary_counts_predictions(client):
     assert payload["review_backlog"] >= 1
 
 
+def test_routing_metrics_count_budgets_and_tta(client, api_config):
+    from aether.routing.risk_control import threshold_artifact
+
+    threshold_artifact(
+        {"lightweight": {0.05: 0.9}, "advanced": {0.05: 0.9}},
+        api_config.artifacts_root / "calibration" / "acceptance_thresholds.json",
+    )
+    client.post(
+        "/api/v1/predict?error_budget=0.05",
+        files={"file": ("budget.png", _png_bytes(9), "image/png")},
+    )
+    payload = client.get("/api/v1/routing/metrics").json()
+    assert payload["budgeted_total"] == 1
+    assert payload["budget_misses"] == 1
+    assert payload["budget_miss_rate"] == pytest.approx(1.0)
+    assert payload["tta_calls"] == 0
+
+
 def test_routing_endpoints(client):
     client.post("/api/v1/predict", files={"file": ("a.png", _png_bytes(4), "image/png")})
     metrics = client.get("/api/v1/routing/metrics")

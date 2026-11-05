@@ -134,6 +134,10 @@ export interface RoutingMetrics {
   escalation_rate: number;
   abstention_rate: number;
   review_rate: number;
+  budgeted_total: number;
+  budget_misses: number;
+  budget_miss_rate: number;
+  tta_calls: number;
 }
 
 export interface MetricsSummary {

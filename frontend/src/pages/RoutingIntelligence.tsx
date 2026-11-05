@@ -48,11 +48,26 @@ export default function RoutingIntelligence() {
 
       {metrics.error && <ErrorState message={metrics.error.message} onRetry={() => void metrics.refresh()} />}
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
         <StatCard label="Decisions" value={metrics.data?.total ?? 0} />
         <StatCard label="Escalation rate" value={formatPercent(metrics.data?.escalation_rate)} tone="warn" />
         <StatCard label="Review rate" value={formatPercent(metrics.data?.review_rate)} tone="accent" />
         <StatCard label="Mean risk" value={formatNumber(metrics.data?.mean_risk, 3)} hint={`latency ${formatNumber(metrics.data?.mean_latency_ms, 1)} ms`} />
+        <StatCard
+          label="Budget misses"
+          value={metrics.data?.budget_misses ?? 0}
+          tone="warn"
+          hint={
+            metrics.data?.budgeted_total
+              ? `${formatPercent(metrics.data?.budget_miss_rate)} of ${metrics.data.budgeted_total} budgeted`
+              : 'no budgeted traffic yet'
+          }
+        />
+        <StatCard
+          label="Mirror passes"
+          value={metrics.data?.tta_calls ?? 0}
+          hint="drift-gated TTA calls"
+        />
       </div>
 
       <Panel title="Offline policy comparison" subtitle="Replayed over routing-development evidence (clean + corrupted)">
@@ -111,7 +126,7 @@ export default function RoutingIntelligence() {
         )}
       </Panel>
 
-      <Panel title="Recent decisions" subtitle="Explanation and reason codes per request">
+      <Panel title="Recent decisions" subtitle="Explanation, reason codes and paid-for TTA per request">
         {decisions.loading && !decisions.data ? (
           <Loading />
         ) : !decisions.data || decisions.data.items.length === 0 ? (

@@ -43,6 +43,12 @@ project adheres to semantic versioning.
   and stored in the persisted decision record, so budgeted traffic can be reviewed after the
   fact rather than only in the HTTP response.
 
+- **Ordering, budget and mirror-pass tiles**: routing intelligence reports budget misses
+  among budgeted traffic and how many decisions paid for a mirror pass, so the audit tag is
+  visible at a glance.
+- **Documentation drift guard**: CI compares README stability numbers against
+  `docs/data/stability-snapshot.json`, written by `make stability`, and fails on mismatch.
+
 - **Error-budget panel and TTA audit trail**: the live-inference page can request a budget and
   shows the calibrated threshold verdict, and the routing timeline marks decisions whose
   escalated call paid for a drift-gated mirror pass.
