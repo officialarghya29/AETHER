@@ -110,6 +110,7 @@ class PredictionResponse(BaseModel):
     latency_ms: float
     review_id: str | None = None
     image_ref: str | None = None
+    risk_budget: dict[str, Any] | None = None
 
 
 class PredictionListResponse(BaseModel):

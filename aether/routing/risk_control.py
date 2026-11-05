@@ -21,8 +21,11 @@ rather than returning a threshold that guarantees nothing.
 
 from __future__ import annotations
 
+import json
 import math
+import time
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from statistics import NormalDist
 from typing import Any
 
@@ -128,6 +131,66 @@ def acceptance_threshold(
         upper_bound=float(min(1.0, best_bound)),
         confidence=1.0 - alpha,
     )
+
+
+@dataclass(frozen=True)
+class ThresholdTable:
+    """Acceptance thresholds keyed by tier and requested budget, loaded from calibration data."""
+
+    tiers: dict[str, dict[str, float]]
+    generated_at: str
+    source: str
+
+    def supported(self, tier: str) -> list[float]:
+        return sorted(float(alpha) for alpha in self.tiers.get(tier, {}))
+
+
+def load_thresholds(path: str | Path) -> ThresholdTable:
+    """Read the acceptance-threshold artifact written by the stability study."""
+    artifact = Path(path)
+    payload = json.loads(artifact.read_text())
+    tiers: dict[str, dict[str, float]] = {}
+    for tier, entries in payload.get("tiers", {}).items():
+        tiers[tier] = {f"{float(alpha):g}": float(value) for alpha, value in entries.items()}
+    if not tiers:
+        raise ValueError(f"threshold artifact {artifact} contains no tiers")
+    return ThresholdTable(
+        tiers=tiers,
+        generated_at=str(payload.get("generated_at", "")),
+        source=str(artifact),
+    )
+
+
+def threshold_for(table: ThresholdTable, tier: str, alpha: float) -> tuple[float, float]:
+    """Return ``(alpha_used, threshold)`` for the calibrated budget closest to ``alpha``.
+
+    The API promises a budget from a finite calibrated ladder, so an unsupported request is
+    answered with the nearest supported budget instead of an invented interpolation between
+    thresholds.
+    """
+    if tier not in table.tiers:
+        raise ValueError(f"tier '{tier}' has no calibrated thresholds")
+    supported = table.supported(tier)
+    chosen = min(supported, key=lambda value: abs(value - alpha))
+    return chosen, float(table.tiers[tier][f"{chosen:g}"])
+
+
+def threshold_artifact(
+    table: dict[str, dict[float, float]], path: str | Path
+) -> dict[str, Any]:
+    """Persist calibration thresholds in the shape :func:`load_thresholds` expects."""
+    payload: dict[str, Any] = {
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "protocol": "thresholds fitted on the calibration split; evaluated on routing-dev",
+        "tiers": {
+            tier: {f"{alpha:g}": round(value, 6) for alpha, value in entries.items()}
+            for tier, entries in table.items()
+        },
+    }
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(payload, indent=2))
+    return payload
 
 
 def selective_report(

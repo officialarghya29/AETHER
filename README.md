@@ -3,7 +3,7 @@
 <p align="center">
   <img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-a855f7?style=flat-square" />
   <img alt="python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-22d3ee?style=flat-square" />
-  <img alt="tests 117 passing" src="https://img.shields.io/badge/tests-117%20passing-a3e635?style=flat-square" />
+  <img alt="tests 120 passing" src="https://img.shields.io/badge/tests-120%20passing-a3e635?style=flat-square" />
   <img alt="mypy clean" src="https://img.shields.io/badge/mypy-52%20modules%20clean-22d3ee?style=flat-square" />
   <img alt="torch 2.13 cpu" src="https://img.shields.io/badge/torch-2.13%20%C2%B7%20cpu-fbbf24?style=flat-square" />
 </p>
@@ -287,6 +287,7 @@ a weak one. Occasionally AETHER pays for escalation and then still abstains, bec
 turned out to be less certain than the estimate implied. That is visible in the cost column, and it is
 the correct behaviour — the alternative is to force an answer the evidence does not support.
 
+
 ## stability — guarantees, not optimism
 
 ### risk-controlled acceptance
@@ -315,20 +316,50 @@ less coverage, which is the honest trade. An earlier version of this module quan
 probability; the study showed it did not bound selective error, so it was replaced rather than
 documented around.
 
-### test-time augmentation (opt-in)
+<img src="docs/assets/stability-sweep.png" alt="Selective error and coverage against corruption severity" width="100%" />
+
+### under corruption, the guarantee stops travelling
+
+
+Coverage / selective error at `alpha = 0.10`, gaussian noise, 1,000 routing-dev images per severity:
+
+| tier | severity 1 | severity 3 | severity 5 |
+| --- | --- | --- | --- |
+| lightweight | 57% / 0.908 | 38% / 0.880 | 21% / 0.873 |
+| advanced | 100% / 0.921 | 98% / 0.908 | 93% / 0.897 |
+
+The bound was never meant to survive shift, and the sweep says so out loud: as noise grows the router
+abstains more (coverage falls) but the accepted answers stay wrong at roughly the same rate, because
+a threshold fitted on clean calibration cannot tell shifted-but-confident from clean-and-correct.
+The correct response is the drift path, not a tighter number on this table.
+
+### test-time augmentation (opt-in, drift-gated)
 
 | stream | identity | with mirror TTA | delta | extra pass |
 | --- | --- | --- | --- | --- |
-| clean routing-dev | 0.9335 | 0.9435 | +0.0100 | 3.51 ms |
-| gaussian noise, severity 3 | 0.6350 | 0.6450 | +0.0100 | 3.55 ms |
+| clean routing-dev | 0.9335 | 0.9435 | +0.0100 | 2.43 ms |
+| gaussian noise, severity 3 | 0.6350 | 0.6450 | +0.0100 | 2.40 ms |
 
 TTA averages identity and horizontal-flip logits on the escalated tier. It buys +0.0100 accuracy
-clean and +0.0100 under corruption for one extra advanced forward pass, so it ships as
-`routing.tta: true` and stays off by default: doubling escalation spend for a marginal,
-stream-dependent gain is the operator's call, not a silent default.
+clean and +0.0100 under corruption for one extra advanced forward pass, and because the mirror is
+paid only when the drift monitor flags the window — 0% of
+clean windows versus 100% of severity-3 noisy windows
+using the detector's measured rates — clean traffic keeps single-pass latency. `routing.tta: true`
+turns it on; `routing.tta_on_drift: false` makes every escalated request pay for it.
 
-Both are reproduced by `make stability`, and a model returning non-finite logits now raises instead
-of being served.
+### asking for a budget over the API
+
+The calibrated ladder ships as `artifacts/calibration/acceptance_thresholds.json` (`make stability`),
+and `POST /api/v1/predict?error_budget=0.05` returns the threshold alongside the decision:
+
+```json
+"risk_budget": {"alpha": 0.05, "threshold": 0.883, "tier": "lightweight",
+                "confidence": 0.941, "meets_threshold": true}
+```
+
+Budgets are answered from the calibrated ladder, not interpolated: an unsupported request reports
+the nearest fitted budget and the threshold it used. A model returning non-finite logits raises
+instead of being served, and the stability study reproduces every number above.
 
 ## efficiency — what it costs
 
@@ -426,7 +457,7 @@ database, never hardcoded.
 | serving | FastAPI, SQLAlchemy 2, Alembic, SQLite / PostgreSQL |
 | dashboard | React 18, TypeScript, Vite, recharts, Tailwind |
 | ops | Docker Compose, nginx, GitHub Actions |
-| quality | pytest (117 passing), ruff clean, mypy clean over `aether/` (52 modules) |
+| quality | pytest (120 passing), ruff clean, mypy clean over `aether/` (52 modules) |
 
 ## quickstart
 

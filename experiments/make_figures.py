@@ -87,7 +87,7 @@ def _clean_axes(ax: plt.Axes) -> None:
 
 
 def _watermark(fig: plt.Figure, text: str = "AETHER-ML  ·  measured, not asserted") -> None:
-    fig.text(0.995, 0.008, text, ha="right", va="bottom", color=MUTED, fontsize=6.5, alpha=0.8)
+    fig.text(0.995, 0.985, text, ha="right", va="top", color=MUTED, fontsize=6.5, alpha=0.8)
 
 
 def _save(fig: plt.Figure, name: str) -> None:
@@ -223,8 +223,9 @@ def selective(bench: dict) -> None:
         ("advanced", "ResNet50", VIOLET, "s"),
     ):
         sel = bench[key]["selective"]
-        cov = np.array([float(k) for k in sel if k.replace(".", "").isdigit()])
-        risk = np.array([sel[k] for k in sel if k.replace(".", "").isdigit()])
+        curve = sel["risk_at_coverage"]
+        cov = np.array([float(k) for k in curve])
+        risk = np.array([float(value) for value in curve.values()])
         order = np.argsort(cov)
         ax.plot(cov[order] * 100, risk[order] * 100, color=colour, lw=5, alpha=0.12)
         ax.plot(
@@ -235,11 +236,12 @@ def selective(bench: dict) -> None:
             ax.annotate(f"{r * 100:.1f}%", (c * 100, r * 100), textcoords="offset points",
                         xytext=(0, 9), ha="center", color=MUTED, fontsize=7)
     ax.axvline(50, color=AMBER, lw=1, ls=":", alpha=0.7)
-    ax.text(51, ax.get_ylim()[1] * 0.9, "50% coverage", color=AMBER, fontsize=7.5)
+    ax.text(51.5, 1.2, "50% coverage", color=AMBER, fontsize=7.5)
+    ax.set_ylim(0, ax.get_ylim()[1] * 1.16)
     ax.set_xlabel("coverage  (% of traffic answered)")
     ax.set_ylabel("risk  (% error among answered)")
     ax.set_title("Selective prediction — abstaining is a feature, not a cop-out", loc="left")
-    ax.legend(fontsize=8, labelcolor=MUTED, loc="upper right")
+    ax.legend(fontsize=8, labelcolor=MUTED, loc="upper left")
     _clean_axes(ax)
     _watermark(fig)
     _save(fig, "selective-risk.png")
@@ -265,10 +267,10 @@ def robustness(bench: dict) -> None:
         ax.text(light_value + 0.006, yi + 0.19, f"{light_value:.3f}", va="center", color=TEXT, fontsize=7)
         ax.text(advanced_value + 0.006, yi - 0.19, f"{advanced_value:.3f}", va="center", color=TEXT, fontsize=7)
     ax.set_yticks(y, [FAMILY_LABEL.get(f, f) for f in families])
-    ax.set_xlim(0, 1.0)
+    ax.set_xlim(0, 1.04)
     ax.set_xlabel("mean accuracy across severities 1–5  (2,500 images per condition)")
     ax.set_title("Corruption sweep — 10 families × 5 severities × 2 models", loc="left")
-    ax.legend(fontsize=8.4, labelcolor=MUTED, loc="lower right")
+    ax.legend(fontsize=7.6, labelcolor=MUTED, loc="lower right", bbox_to_anchor=(1.0, 0.015))
     _clean_axes(ax)
     ax.grid(axis="y", visible=False)
     _watermark(fig)
@@ -322,47 +324,46 @@ def routing(bench: dict) -> None:
     order = ["always_light", "always_advanced", "shift_aware", "fixed_threshold",
              "uncertainty_only", "aether"]
     fig, ax = plt.subplots(figsize=(8.2, 4.6))
-    offsets = {
-        "always_light": (-12, 12, "right"),
-        "always_advanced": (-8, 26, "center"),
-        "shift_aware": (10, -34, "left"),
-        "fixed_threshold": (14, 6, "left"),
-        "uncertainty_only": (14, -22, "left"),
-        "aether": (14, 2, "left"),
-    }
     for name in order:
         p = policies[name]
         x = p["expected_cost_per_sample"]
         y = p["coverage"] * 100
         hero_policy = name == "aether"
-        colour = LIME if hero_policy else CYAN if p["escalation_rate"] > 0 else VIOLET
+        colour = LIME if hero_policy else AMBER if p["escalation_rate"] > 0 else CYAN
         ax.scatter(
-            [x], [y], s=(p["accuracy_on_answered"] ** 3) * 260 + 90,
-            color=colour, alpha=0.22 if not hero_policy else 0.35, linewidths=0,
+            [x], [y], s=(p["accuracy_on_answered"] ** 3) * 240 + 90,
+            color=colour, alpha=0.18 if not hero_policy else 0.32, linewidths=0,
         )
         ax.scatter(
             [x], [y], s=52, color=colour, edgecolor=BG, linewidths=1.2, zorder=3,
-            label=name if hero_policy else None,
+            label=name,
         )
-        dx, dy, ha = offsets[name]
-        ax.annotate(
-            f"{name}\n{y:.0f}% covered · {p['accuracy_on_answered'] * 100:.1f}% accurate",
-            (x, y), textcoords="offset points", xytext=(dx, dy), ha=ha,
-            fontsize=7.6, color=LIME if hero_policy else MUTED,
-            fontweight="bold" if hero_policy else "normal",
-        )
+    aether = policies["aether"]
+    ax.annotate(
+        f"aether — {aether['coverage'] * 100:.0f}% answered · "
+        f"{aether['accuracy_on_answered'] * 100:.1f}% accurate",
+        xy=(aether["expected_cost_per_sample"], aether["coverage"] * 100),
+        xytext=(1.58, 80), color=LIME, fontsize=8.4, fontweight="bold",
+        arrowprops={"arrowstyle": "->", "color": LIME, "lw": 1.1, "alpha": 0.8},
+    )
+    table = "\n".join(
+        f"{name:<17}{policies[name]['expected_cost_per_sample']:>5.2f}  "
+        f"{policies[name]['coverage'] * 100:>5.1f}%  "
+        f"{policies[name]['accuracy_on_answered'] * 100:>5.1f}%"
+        for name in order
+    )
+    ax.text(
+        0.40, 0.05, "policy              cost   cover    acc\n" + table,
+        transform=ax.transAxes, family="DejaVu Sans Mono", fontsize=6.8,
+        color=MUTED, va="bottom", linespacing=1.3,
+    )
     ax.axhline(100, color=GRID, lw=0.8)
-    ax.set_xlim(0.9, 3.7)
-    ax.set_ylim(20, 112)
+    ax.set_xlim(0.9, 3.75)
+    ax.set_ylim(15, 110)
     ax.set_xlabel("expected cost per image  (error 10 · escalate 1 · review 4 · abstain 2)")
     ax.set_ylabel("coverage  (%)")
     ax.set_title("Routing replay — 5,000 clean + 3,000 corrupted routing-dev images", loc="left")
-    ax.annotate(
-        "less spend, more accuracy\nthan either model alone",
-        xy=(1.40, 64.0), xytext=(1.86, 44),
-        color=LIME, fontsize=8.2,
-        arrowprops={"arrowstyle": "->", "color": LIME, "lw": 1.1, "alpha": 0.8},
-    )
+    ax.legend(loc="upper left", fontsize=7.2, labelcolor=MUTED, ncol=2)
     _clean_axes(ax)
     _watermark(fig)
     _save(fig, "routing-races.png")
@@ -384,9 +385,9 @@ def ablations(bench: dict) -> None:
                 ha="left" if d >= 0 else "right", color=TEXT, fontsize=8)
     ax.set_yticks(np.arange(len(names)), [names[i] for i in order])
     ax.axvline(0, color=MUTED, lw=0.9)
-    ax.set_xlabel("change in cost per image when the signal is removed  (positive = worse)")
+    ax.set_xlabel("cost change per image when the signal is removed  (positive = worse)")
     ax.set_title(f"Ablations — full AETHER costs {baseline:.3f} per image", loc="left")
-    ax.set_xlim(min(deltas) - 0.12, max(deltas) + 0.16)
+    ax.set_xlim(min(deltas) - 0.12, max(deltas) + 0.24)
     _clean_axes(ax)
     ax.grid(axis="y", visible=False)
     _watermark(fig)
@@ -451,6 +452,9 @@ def pareto(bench: dict) -> None:
         textcoords="offset points", xytext=(10, 10), color=LIME, fontsize=8.2,
     )
     ax.set_xscale("log")
+    ax.set_xticks([0.2, 0.5, 1.0, 2.0], ["0.2", "0.5", "1.0", "2.0"])
+    ax.minorticks_off()
+    ax.set_xlim(0.15, 3.3)
     ax.set_xlabel("latency per image (ms, log scale)")
     ax.set_ylabel("accuracy  (%)")
     ax.set_ylim(60, 100)
@@ -558,7 +562,8 @@ def efficiency(report: dict) -> None:
     ax.set_xticks(sizes, [str(size) for size in sizes])
     ax.set_xlabel("batch size")
     ax.set_ylabel("ms per image")
-    ax.set_title("Batching amortises the fixed cost", loc="left")
+    ax.set_ylim(0, max(ms) * 1.22)
+    ax.set_title("Batching amortises the fixed cost", loc="left", pad=12)
     _clean_axes(ax)
 
     ax = axes[1]
@@ -592,6 +597,37 @@ def efficiency(report: dict) -> None:
     _save(fig, "efficiency.png")
 
 
+def stability_sweep(report: dict) -> None:
+    """Selective error against corruption severity at two calibrated budgets."""
+    rows = report["severity_sweep"]
+    severities = [1, 3, 5]
+    fig, axes = plt.subplots(1, 2, figsize=(9.4, 3.9), sharey=True)
+    for ax, tier, name in (
+        (axes[0], "lightweight", "MobileNetV3-Small"),
+        (axes[1], "advanced", "ResNet50"),
+    ):
+        entries = [entry for entry in rows if entry["tier"] == tier]
+        for entry, colour in zip(entries, (AMBER, CYAN), strict=False):
+            xs = [stream["severity"] for stream in entry["streams"]]
+            ys = [stream["selective_error"] * 100 for stream in entry["streams"]]
+            ax.plot(xs, ys, color=colour, marker="o", lw=2, label=f"budget {entry['alpha']:.2f}")
+            ax.axhline(entry["alpha"] * 100, color=colour, ls=":", lw=0.9, alpha=0.55)
+        ax.set_xticks(severities)
+        ax.set_ylim(0, 100)
+        ax.set_xlabel("gaussian-noise severity")
+        ax.set_title(f"{name} — selective error vs corruption", loc="left", fontsize=10.5, pad=10)
+        ax.legend(fontsize=7.6, labelcolor=MUTED, loc="lower left")
+        _clean_axes(ax)
+    axes[0].set_ylabel("selective error among answered  (%)")
+    fig.suptitle(
+        "Risk control under corruption — dotted lines are the requested budgets",
+        x=0.012, ha="left", color=TEXT, fontsize=12.5, fontweight="bold",
+    )
+    fig.tight_layout(rect=(0, 0.02, 1, 0.90))
+    _watermark(fig)
+    _save(fig, "stability-sweep.png")
+
+
 def main() -> None:
     bench = load("benchmarks.json")
     calib = json.loads((CALIB / "learned_policy.json").read_text())
@@ -610,6 +646,9 @@ def main() -> None:
     efficiency_path = REPORTS / "efficiency.json"
     if efficiency_path.exists():
         efficiency(json.loads(efficiency_path.read_text()))
+    stability_path = REPORTS / "stability.json"
+    if stability_path.exists():
+        stability_sweep(json.loads(stability_path.read_text()))
 
 
 if __name__ == "__main__":

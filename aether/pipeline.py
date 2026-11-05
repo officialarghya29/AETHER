@@ -104,6 +104,17 @@ class InferenceResult:
         }
 
 
+def tta_enabled(config: AetherConfig, severity: str) -> bool:
+    """Whether an escalated request should pay for the mirror pass.
+
+    TTA has to be switched on explicitly, and by default it is gated on the drift monitor so that
+    clean traffic keeps the single-pass cost.
+    """
+    if not config.routing.tta:
+        return False
+    return not config.routing.tta_on_drift or severity != "none"
+
+
 def _uncertainty(probabilities: np.ndarray, epsilon: float) -> dict[str, float]:
     return {
         "predictive_entropy": float(predictive_entropy(probabilities, epsilon)),
@@ -310,7 +321,7 @@ class ReliabilityPipeline:
             index for index, decision in enumerate(decisions) if decision.action is Action.ESCALATE
         ]
         advanced_predictions = self._run_advanced(
-            batch, escalated_indices, states, decisions, calibrated, risks
+            batch, escalated_indices, states, decisions, calibrated, risks, drifts
         )
 
         results: list[InferenceResult] = []
@@ -522,6 +533,7 @@ class ReliabilityPipeline:
         decisions: list[RoutingDecision],
         light_probabilities: list[np.ndarray],
         light_risks: list[float],
+        drifts: list[DriftReport],
     ) -> dict[int, dict[str, Any]]:
         """Execute the advanced model for escalated samples only."""
         if not indices:
@@ -552,13 +564,24 @@ class ReliabilityPipeline:
         started = time.perf_counter()
         predictions = advanced.predict(subset)
         self._assert_finite(predictions, "advanced")
-        if self.config.routing.tta:
-            mirrored = advanced.predict(torch.flip(subset, dims=[3]), return_embeddings=False)
+        # Only the escalated rows whose drift report warrants it pay for the second pass; the rest
+        # of the subset keeps single-pass latency.
+        tta_positions = [
+            position
+            for position, index in enumerate(indices)
+            if tta_enabled(self.config, drifts[index].severity)
+        ]
+        tta_applied = [False] * len(indices)
+        if tta_positions:
+            mirrored = advanced.predict(
+                torch.flip(subset[tta_positions], dims=[3]), return_embeddings=False
+            )
             self._assert_finite(mirrored, "advanced (test-time augmentation)")
-            predictions = [
-                self._merge_tta(primary, mirror, advanced.metadata.classes)
-                for primary, mirror in zip(predictions, mirrored, strict=True)
-            ]
+            for position, mirror in zip(tta_positions, mirrored, strict=True):
+                predictions[position] = self._merge_tta(
+                    predictions[position], mirror, advanced.metadata.classes
+                )
+                tta_applied[position] = True
         elapsed_ms = (time.perf_counter() - started) * 1000.0
         per_sample_ms = elapsed_ms / max(1, len(indices))
         if self._advanced_warm:
@@ -602,6 +625,7 @@ class ReliabilityPipeline:
                 "disagreement": disagreement,
                 "latency_ms": elapsed_ms / max(1, len(indices)),
                 "action": decision.action.value,
+                "test_time_augmentation": tta_applied[position],
             }
         return outputs
 
@@ -682,6 +706,7 @@ class ReliabilityPipeline:
                     "version": advanced["prediction"].model_version,
                     "disagreement": round(float(advanced["disagreement"] or 0.0), 6),
                     "latency_ms": round(float(advanced["latency_ms"]), 3),
+                    "test_time_augmentation": bool(advanced["test_time_augmentation"]),
                     "uncertainty": advanced["uncertainty"],
                 }
                 if advanced

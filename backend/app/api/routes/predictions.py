@@ -9,6 +9,7 @@ from sqlalchemy import func, select
 from aether.errors import InvalidInputError, NotFoundError
 from aether.imaging import centre_crop_square, decode_image
 from aether.monitoring.metrics import METRICS
+from aether.routing.risk_control import ThresholdTable, load_thresholds, threshold_for
 from aether.utils.logging import get_logger, request_id_var
 from backend.app.api.dependencies import (
     ConfigDep,
@@ -32,6 +33,44 @@ router = APIRouter(tags=["predictions"])
 logger = get_logger("aether.api.predictions")
 
 MAX_BATCH_FILES = 16
+_THRESHOLD_CACHE: dict[str, tuple[float | None, ThresholdTable]] = {}
+
+
+def _acceptance_table(config) -> ThresholdTable:
+    """Load the calibrated budget ladder, cached on file mtime."""
+    path = config.artifacts_root / "calibration" / "acceptance_thresholds.json"
+    key = str(path)
+    mtime = path.stat().st_mtime if path.exists() else None
+    cached = _THRESHOLD_CACHE.get(key)
+    if cached is not None and cached[0] == mtime:
+        return cached[1]
+    try:
+        table = load_thresholds(path)
+    except (OSError, ValueError) as exc:
+        raise InvalidInputError(
+            "acceptance thresholds are not calibrated; run `make stability` to produce "
+            f"{path}"
+        ) from exc
+    _THRESHOLD_CACHE[key] = (mtime, table)
+    return table
+
+
+def _risk_budget(result, alpha: float, config) -> dict:
+    """Compare the served confidence with the calibrated threshold for a requested budget."""
+    table = _acceptance_table(config)
+    advanced_answered = result.advanced is not None and result.action == "ACCEPT"
+    tier = "advanced" if advanced_answered else "lightweight"
+    used_alpha, threshold = threshold_for(table, tier, alpha)
+    confidence = float(max(result.probabilities)) if result.probabilities else 0.0
+    return {
+        "requested_alpha": round(alpha, 4),
+        "alpha": used_alpha,
+        "threshold": round(threshold, 4),
+        "tier": tier,
+        "confidence": round(confidence, 4),
+        "meets_threshold": confidence >= threshold,
+        "generated_at": table.generated_at,
+    }
 
 
 def _decode_uploads(files: list[UploadFile], config, require_square: bool = False) -> tuple[np.ndarray, list[bytes]]:
@@ -55,9 +94,13 @@ def _decode_uploads(files: list[UploadFile], config, require_square: bool = Fals
     return np.stack(images).astype(np.uint8), payloads
 
 
-def _to_response(result, review_id: str | None) -> PredictionResponse:
+def _to_response(
+    result, review_id: str | None, risk_budget: dict | None = None
+) -> PredictionResponse:
     payload = result.to_dict()
     payload["review_id"] = review_id
+    if risk_budget is not None:
+        payload["risk_budget"] = risk_budget
     return PredictionResponse(**payload)
 
 
@@ -68,13 +111,20 @@ def predict(
     session: SessionDep,
     _rate: RateLimitDep,
     file: UploadFile = File(..., description="PNG/JPEG/WebP/BMP image"),
+    error_budget: float | None = Query(
+        None,
+        gt=0,
+        lt=1,
+        description="Optional selective-error budget; returns the calibrated acceptance threshold",
+    ),
 ) -> PredictionResponse:
     """Run the full reliability pipeline for a single image."""
     images, payloads = _decode_uploads([file], config)
     service = PredictionService(session, pipeline, config)
     results = service.run(images, request_id=request_id_var.get(), raw_payloads=payloads)
     result, review_id = results[0]
-    return _to_response(result, review_id)
+    budget = _risk_budget(result, error_budget, config) if error_budget is not None else None
+    return _to_response(result, review_id, budget)
 
 
 @router.post("/predict/batch", response_model=list[PredictionResponse], status_code=201)
@@ -84,6 +134,7 @@ def predict_batch(
     session: SessionDep,
     _rate: RateLimitDep,
     files: list[UploadFile] = File(...),
+    error_budget: float | None = Query(None, gt=0, lt=1),
 ) -> list[PredictionResponse]:
     """Run the pipeline over a batch of images."""
     if not files:
@@ -96,7 +147,14 @@ def predict_batch(
     service = PredictionService(session, pipeline, config)
     results = service.run(images, request_id=request_id_var.get(), raw_payloads=payloads)
     METRICS.increment("batch_predictions", len(results))
-    return [_to_response(result, review_id) for result, review_id in results]
+    return [
+        _to_response(
+            result,
+            review_id,
+            _risk_budget(result, error_budget, config) if error_budget is not None else None,
+        )
+        for result, review_id in results
+    ]
 
 
 @router.get("/predictions", response_model=PredictionListResponse)

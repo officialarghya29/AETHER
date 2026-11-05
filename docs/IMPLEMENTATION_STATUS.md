@@ -100,7 +100,7 @@ comparison, non-root container, no secrets in the repository. Documented in `doc
 
 ## Phase 13 — Testing
 
-- `python -m pytest` → **117 passed**.
+- `python -m pytest` → **120 passed**.
 - `python -m ruff check aether backend training experiments tests scripts` → clean.
 - Coverage of unit, integration, failure and API contract paths. No test was skipped or weakened to
   make the suite pass; three defects were found and fixed through failing tests instead.
@@ -138,7 +138,7 @@ orchestrated here*.
 single `main` branch.
 
 **Verified locally:** `ruff check` clean, `mypy aether` clean over 52 modules (pydantic plugin
-enabled), `pytest` 117 passing. **Not verified:** the workflow itself has not executed on GitHub
+enabled), `pytest` 120 passing. **Not verified:** the workflow itself has not executed on GitHub
 Actions from this machine.
 
 ## Honest summary
@@ -157,3 +157,10 @@ Actions from this machine.
 | CI workflow | Written, not executed here |
 | mypy | Clean over `aether/` (52 modules) |
 | Full CIFAR-10-C coverage | Not implemented (10 of 15 families) |
+
+## Selective budgets
+
+- `make stability` fits a calibrated acceptance ladder on the calibration split and writes
+  `artifacts/calibration/acceptance_thresholds.json`; `POST /predict?error_budget=` returns
+  the matched threshold, coverage budget and whether the served confidence clears it.
+- TTA is opt-in and drift-gated: the mirror pass is paid only on windows the monitor flags.

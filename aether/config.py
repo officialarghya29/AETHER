@@ -167,6 +167,9 @@ class RoutingConfig(StrictModel):
     # Test-time augmentation on the escalated tier: average the logits of the image and its mirror.
     # Measured on routing data; off by default because it doubles the advanced-model spend.
     tta: bool = False
+    # When TTA is on, pay the mirror pass only for requests whose window the drift monitor has
+    # flagged. Clean traffic keeps single-pass cost while shifted traffic gets the accuracy gain.
+    tta_on_drift: bool = True
     costs: CostsConfig = CostsConfig()
     learned_policy: LearnedPolicyConfig = LearnedPolicyConfig()
 

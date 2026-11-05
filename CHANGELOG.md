@@ -36,6 +36,16 @@ project adheres to semantic versioning.
 
 ### Added
 
+- **Drift-gated test-time augmentation**: `routing.tta_on_drift` (default on) means the
+  mirror pass is paid only for escalated requests whose window the drift monitor flagged,
+  measured at 0% of clean windows and 100% of severity-3 windows.
+- **Per-severity stability sweep** in `make stability`: coverage and selective error at
+  gaussian-noise severities 1, 3 and 5 at two calibrated budgets, plotted as
+  `docs/assets/stability-sweep.png`.
+- **Error budgets over the API**: `POST /predict` and `/predict/batch` accept an optional
+  `error_budget` and return the calibrated acceptance threshold and whether the served
+  confidence clears it.
+
 - **Risk-controlled acceptance thresholds** (`aether/routing/risk_control.py`): the
   cut-off is the most permissive calibration prefix whose selective error stays within
   `alpha` under a one-sided Wilson bound, evaluated on clean and corrupted routing data by
