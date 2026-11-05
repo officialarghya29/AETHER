@@ -3,25 +3,25 @@
 Risk-controlled thresholds and test-time augmentation, measured on calibration and
 routing-development data. Regenerate with `make stability`.
 
-## Conformal acceptance (clean routing-dev)
+## Risk-controlled acceptance
 
 | tier | alpha | threshold | coverage | selective error |
 | --- | --- | --- | --- | --- |
-| lightweight | 0.20 | 0.395 | 0.953 | 0.192 |
-| lightweight | 0.10 | 0.144 | 1.000 | 0.210 |
-| lightweight | 0.05 | 0.053 | 1.000 | 0.210 |
-| lightweight | 0.02 | 0.019 | 1.000 | 0.210 |
-| advanced | 0.20 | 0.971 | 0.808 | 0.013 |
-| advanced | 0.10 | 0.901 | 0.904 | 0.028 |
-| advanced | 0.05 | 0.466 | 0.993 | 0.061 |
-| advanced | 0.02 | 0.031 | 1.000 | 0.067 |
+| lightweight | 0.20 | 0.311 | 0.989 | 0.206 |
+| lightweight | 0.10 | 0.716 | 0.694 | 0.097 |
+| lightweight | 0.05 | 0.883 | 0.507 | 0.050 |
+| lightweight | 0.02 | 0.969 | 0.276 | 0.020 |
+| advanced | 0.20 | 0.322 | 0.999 | 0.066 |
+| advanced | 0.10 | 0.322 | 0.999 | 0.066 |
+| advanced | 0.05 | 0.534 | 0.987 | 0.056 |
+| advanced | 0.02 | 0.947 | 0.869 | 0.018 |
 
 ## Test-time augmentation (advanced tier)
 
 | stream | identity | TTA | delta | mirror pass |
 | --- | --- | --- | --- | --- |
-| clean | 0.9335 | 0.9435 | +0.0100 | 2.44 ms |
-| corrupted_gaussian_noise_severity_3 | 0.6350 | 0.6450 | +0.0100 | 2.56 ms |
+| clean | 0.9335 | 0.9435 | +0.0100 | 2.54 ms |
+| corrupted_gaussian_noise_severity_3 | 0.6350 | 0.6450 | +0.0100 | 2.44 ms |
 
 Cost: one extra advanced forward pass per escalated request. The pipeline enables it with `routing.tta = true`.
 

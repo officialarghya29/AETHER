@@ -32,7 +32,7 @@ from aether.data.cifar import build_and_persist_splits, load_cifar10  # noqa: E4
 from aether.data.corruptions import apply_corruption  # noqa: E402
 from aether.data.preprocessing import prepare_model_input  # noqa: E402
 from aether.pipeline import ReliabilityPipeline  # noqa: E402
-from aether.routing.conformal import acceptance_threshold, selective_report  # noqa: E402
+from aether.routing.risk_control import acceptance_threshold, selective_report  # noqa: E402
 from aether.uncertainty.calibration import apply_temperature  # noqa: E402
 
 REPORTS = ROOT / "artifacts" / "reports"
@@ -62,25 +62,36 @@ def conformal_study(
     images: np.ndarray,
     labels: np.ndarray,
 ) -> dict[str, Any]:
+    """Fit risk-controlled thresholds on calibration data and test them on routing data."""
+    routing = images[splits["routing_dev"]][:2000]
+    routing_labels = labels[splits["routing_dev"]][: len(routing)]
+    corrupted, corrupted_labels = corrupted_stream(routing, routing_labels, CORRUPTED_IMAGES)
+
     results: dict[str, Any] = {}
     for role in ("lightweight", "advanced"):
         calibration_probs = calibrated_probabilities(pipeline, role, images[splits["calibration"]])
         calibration_labels = labels[splits["calibration"]]
-        true_class = calibration_probs[np.arange(len(calibration_labels)), calibration_labels]
+        confidence = calibration_probs.max(axis=1)
+        correct = calibration_probs.argmax(axis=1) == calibration_labels
+
+        clean_probs = calibrated_probabilities(pipeline, role, routing)
+        corrupted_probs = calibrated_probabilities(pipeline, role, corrupted)
 
         threshold_rows = []
         for alpha in ALPHAS:
-            threshold = acceptance_threshold(true_class, alpha)
-            row: dict[str, Any] = {"alpha": alpha, "threshold": round(threshold.threshold, 4)}
-            for stream, evaluation_images in (
-                ("routing_dev_clean", images[splits["routing_dev"]][:2000]),
-                ("routing_dev_corrupted", None),
+            threshold = acceptance_threshold(confidence, correct, alpha)
+            row: dict[str, Any] = {
+                "alpha": alpha,
+                "threshold": round(threshold.threshold, 4),
+                "calibration_coverage": round(threshold.calibration_coverage, 4),
+                "calibration_risk": round(threshold.calibration_risk, 4),
+                "calibration_bound": round(threshold.upper_bound, 4),
+            }
+            for stream, probs, stream_labels in (
+                ("routing_dev_clean", clean_probs, routing_labels),
+                ("routing_dev_corrupted", corrupted_probs, corrupted_labels),
             ):
-                if evaluation_images is None:
-                    continue
-                probs = calibrated_probabilities(pipeline, role, evaluation_images)
-                eval_labels = labels[splits["routing_dev"]][: len(evaluation_images)]
-                report = selective_report(probs, eval_labels, threshold.threshold)
+                report = selective_report(probs, stream_labels, threshold.threshold)
                 row[stream] = {
                     "coverage": round(report["coverage"], 4),
                     "selective_error": round(report["selective_error"], 4)
@@ -211,7 +222,7 @@ def write_markdown(report: dict[str, Any]) -> None:
         "Risk-controlled thresholds and test-time augmentation, measured on calibration and",
         "routing-development data. Regenerate with `make stability`.",
         "",
-        "## Conformal acceptance (clean routing-dev)",
+        "## Risk-controlled acceptance",
         "",
         "| tier | alpha | threshold | coverage | selective error |",
         "| --- | --- | --- | --- | --- |",

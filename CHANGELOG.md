@@ -36,9 +36,11 @@ project adheres to semantic versioning.
 
 ### Added
 
-- **Split-conformal acceptance thresholds** (`aether/routing/conformal.py`): the
-  acceptance cut-off is now derived from calibration scores with a finite-sample error
-  bound, and evaluated on clean and corrupted routing data by `make stability`.
+- **Risk-controlled acceptance thresholds** (`aether/routing/risk_control.py`): the
+  cut-off is the most permissive calibration prefix whose selective error stays within
+  `alpha` under a one-sided Wilson bound, evaluated on clean and corrupted routing data by
+  `make stability`. An earlier quantile version did not bound selective error and was
+  replaced after the study caught it.
 - **Test-time augmentation** for the escalated tier (`routing.tta`), averaging identity and
   horizontal-flip logits; measured as opt-in and documented with its latency cost.
 - **Non-finite output guard**: a model that returns NaN/Inf logits now raises `InferenceError`
