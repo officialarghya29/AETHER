@@ -3,7 +3,7 @@
 <p align="center">
   <img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-a855f7?style=flat-square" />
   <img alt="python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-22d3ee?style=flat-square" />
-  <img alt="tests 109 passing" src="https://img.shields.io/badge/tests-109%20passing-a3e635?style=flat-square" />
+  <img alt="tests 113 passing" src="https://img.shields.io/badge/tests-113%20passing-a3e635?style=flat-square" />
   <img alt="mypy clean" src="https://img.shields.io/badge/mypy-52%20modules%20clean-22d3ee?style=flat-square" />
   <img alt="torch 2.13 cpu" src="https://img.shields.io/badge/torch-2.13%20%C2%B7%20cpu-fbbf24?style=flat-square" />
 </p>
@@ -287,6 +287,44 @@ a weak one. Occasionally AETHER pays for escalation and then still abstains, bec
 turned out to be less certain than the estimate implied. That is visible in the cost column, and it is
 the correct behaviour — the alternative is to force an answer the evidence does not support.
 
+## stability — guarantees, not optimism
+
+Two additions that turn reliability claims into checkable ones.
+
+### conformal acceptance
+
+Temperature scaling makes a probability honest; split conformal makes the **acceptance threshold**
+honest. Scores on the calibration split (`1 − p(true class)`) give a threshold whose selective error
+is bounded at `alpha` with finite-sample confidence — no distributional assumption beyond
+exchangeability between calibration and served traffic.
+
+| tier | alpha | threshold | coverage (clean) | selective error |
+| --- | --- | --- | --- | --- |
+| lightweight | 0.20 | 0.395 | 0.953 | 0.192 |
+| lightweight | 0.10 | 0.144 | 1.000 | 0.210 |
+| lightweight | 0.05 | 0.053 | 1.000 | 0.210 |
+| lightweight | 0.02 | 0.019 | 1.000 | 0.210 |
+| advanced | 0.20 | 0.971 | 0.808 | 0.013 |
+| advanced | 0.10 | 0.901 | 0.904 | 0.028 |
+| advanced | 0.05 | 0.466 | 0.993 | 0.061 |
+| advanced | 0.02 | 0.031 | 1.000 | 0.067 |
+
+Tighter guarantees cost coverage, exactly as they should. The bound is marginal over draws, and it
+does **not** survive distribution shift — the corrupted-stream columns live in
+[`artifacts/reports/STABILITY.md`](artifacts/reports/STABILITY.md) rather than being quietly folded
+into the clean numbers.
+
+### test-time augmentation (opt-in)
+
+| stream | identity | with mirror TTA | delta | extra pass |
+| --- | --- | --- | --- | --- |
+| clean routing-dev | 0.9335 | 0.9435 | +0.0100 | 2.44 ms |
+| gaussian noise, severity 3 | 0.6350 | 0.6450 | +0.0100 | 2.56 ms |
+
+Averaging the mirror costs one extra advanced forward pass (2.44 ms per image) and moves accuracy by +0.0100 clean and +0.0100 under corruption. It is therefore **opt-in** via `routing.tta: true` — measured, not assumed to help, and not enabled by default while it doubles escalation spend for a marginal gain.
+
+Both are reproduced by `make stability`; the pipeline totals are unchanged unless TTA is enabled.
+
 ## efficiency — what it costs
 
 Measured by `make efficiency` on the same CPU that produced every other number here, warmed, with
@@ -383,7 +421,7 @@ database, never hardcoded.
 | serving | FastAPI, SQLAlchemy 2, Alembic, SQLite / PostgreSQL |
 | dashboard | React 18, TypeScript, Vite, recharts, Tailwind |
 | ops | Docker Compose, nginx, GitHub Actions |
-| quality | pytest (109 passing), ruff clean, mypy clean over `aether/` (52 modules) |
+| quality | pytest (113 passing), ruff clean, mypy clean over `aether/` (52 modules) |
 
 ## quickstart
 

@@ -164,6 +164,9 @@ class RoutingConfig(StrictModel):
     enable_abstention: bool = True
     review_available: bool = True
     reviewer_error_rate: float = Field(0.02, gt=0, lt=1)
+    # Test-time augmentation on the escalated tier: average the logits of the image and its mirror.
+    # Measured on routing data; off by default because it doubles the advanced-model spend.
+    tta: bool = False
     costs: CostsConfig = CostsConfig()
     learned_policy: LearnedPolicyConfig = LearnedPolicyConfig()
 

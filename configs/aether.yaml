@@ -80,6 +80,7 @@ routing:
   enable_abstention: true
   review_available: true
   reviewer_error_rate: 0.02        # residual risk after a verified human label
+  tta: false                       # test-time augmentation on escalated requests (2x advanced cost)
   costs:
     error: 10.0                     # cost of an incorrect automatic prediction
     escalate: 1.0                   # relative cost of one advanced-model call

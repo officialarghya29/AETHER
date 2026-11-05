@@ -34,7 +34,7 @@ from aether.diagnosis.image_quality import ImageQuality, analyze_image
 from aether.diagnosis.rules import DiagnosisEngine
 from aether.drift.monitor import DriftMonitor, DriftObservation, DriftReport, RollingWindow
 from aether.drift.reference import load_reference
-from aether.errors import ModelNotAvailableError
+from aether.errors import InferenceError, ModelNotAvailableError
 from aether.models.registry import ModelRegistry
 from aether.routing.controller import RoutingController
 from aether.routing.cost import Action
@@ -45,6 +45,7 @@ from aether.uncertainty.entropy import (
     max_probability,
     prediction_margin,
     predictive_entropy,
+    softmax,
 )
 from aether.utils.logging import get_logger
 
@@ -235,6 +236,7 @@ class ReliabilityPipeline:
         t_light = time.perf_counter()
         light_predictions = light_adapter.predict(batch)
         light_ms = (time.perf_counter() - t_light) * 1000.0
+        self._assert_finite(light_predictions, "lightweight")
 
         temperatures = [self.calibration.temperature(p.model_id) for p in light_predictions]
         calibrated = [
@@ -440,6 +442,35 @@ class ReliabilityPipeline:
         )
         return self._risk_from_features(role, evidence)
 
+    @staticmethod
+    def _assert_finite(predictions: list[Prediction], role: str) -> None:
+        """Fail loudly on non-finite model output instead of serving a silent NaN decision."""
+        for prediction in predictions:
+            if not np.all(np.isfinite(prediction.logits)):
+                raise InferenceError(f"{role} model produced non-finite logits")
+
+    @staticmethod
+    def _merge_tta(
+        primary: Prediction, mirrored: Prediction, classes: tuple[str, ...]
+    ) -> Prediction:
+        """Average the logits of an image and its horizontal mirror (test-time augmentation)."""
+        logits = (
+            np.asarray(primary.logits, dtype=np.float64)
+            + np.asarray(mirrored.logits, dtype=np.float64)
+        ) / 2.0
+        probabilities = softmax(logits)
+        index = int(np.argmax(probabilities))
+        return Prediction(
+            model_id=primary.model_id,
+            model_version=primary.model_version,
+            class_index=index,
+            class_label=classes[index],
+            logits=logits.astype(np.float32),
+            probabilities=probabilities.astype(np.float32),
+            latency_ms=primary.latency_ms + mirrored.latency_ms,
+            embedding=primary.embedding,
+        )
+
     def _risk_from_features(
         self, role: str, evidence: dict[str, float]
     ) -> tuple[float, str]:
@@ -520,6 +551,14 @@ class ReliabilityPipeline:
         subset = batch[indices]
         started = time.perf_counter()
         predictions = advanced.predict(subset)
+        self._assert_finite(predictions, "advanced")
+        if self.config.routing.tta:
+            mirrored = advanced.predict(torch.flip(subset, dims=[3]), return_embeddings=False)
+            self._assert_finite(mirrored, "advanced (test-time augmentation)")
+            predictions = [
+                self._merge_tta(primary, mirror, advanced.metadata.classes)
+                for primary, mirror in zip(predictions, mirrored, strict=True)
+            ]
         elapsed_ms = (time.perf_counter() - started) * 1000.0
         per_sample_ms = elapsed_ms / max(1, len(indices))
         if self._advanced_warm:

@@ -36,6 +36,14 @@ project adheres to semantic versioning.
 
 ### Added
 
+- **Split-conformal acceptance thresholds** (`aether/routing/conformal.py`): the
+  acceptance cut-off is now derived from calibration scores with a finite-sample error
+  bound, and evaluated on clean and corrupted routing data by `make stability`.
+- **Test-time augmentation** for the escalated tier (`routing.tta`), averaging identity and
+  horizontal-flip logits; measured as opt-in and documented with its latency cost.
+- **Non-finite output guard**: a model that returns NaN/Inf logits now raises `InferenceError`
+  instead of serving a confidently meaningless decision.
+
 - **Efficiency study** (`make efficiency`): component, batch, feature, persistence and memory
   scopes, reported in `artifacts/reports/EFFICIENCY.md` and summarised in the README.
 
