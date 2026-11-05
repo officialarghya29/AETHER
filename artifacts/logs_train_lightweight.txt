@@ -1,0 +1,87 @@
+00:29:29 INFO    aether.data.cifar [-] loaded CIFAR-10 artefact path=cifar10.npz train_fingerprint=c5b8e1d062f7
+00:29:29 INFO    aether.data.cifar [-] reusing existing split assignment seed=42
+00:29:29 INFO    aether.train [-] training started architecture=mobilenet_v3_small device=cpu epochs=10 image_size=64 parameters=1528106 role=lightweight train_images=32000 val_images=4000
+00:29:36 INFO    aether.train [-] train step epoch=1 loss=2.442 lr=0.000339 step=20 steps=125
+00:29:46 INFO    aether.train [-] train step epoch=1 loss=2.2173 lr=0.000661 step=40 steps=125
+00:29:59 INFO    aether.train [-] train step epoch=1 loss=2.0529 lr=0.000984 step=60 steps=125
+00:30:12 INFO    aether.train [-] train step epoch=1 loss=1.9384 lr=0.000999 step=80 steps=125
+00:30:27 INFO    aether.train [-] train step epoch=1 loss=1.8564 lr=0.000997 step=100 steps=125
+00:30:40 INFO    aether.train [-] train step epoch=1 loss=1.7882 lr=0.000994 step=120 steps=125
+00:30:44 INFO    aether.train [-] train step epoch=1 loss=1.7731 lr=0.000993 step=125 steps=125
+00:30:46 INFO    aether.train [-] epoch complete epoch=1 epoch_seconds=76.83 train_loss=1.7731459875106812 train_samples=32000 val_accuracy=0.601 val_loss=1.1598613052368163
+00:31:00 INFO    aether.train [-] train step epoch=2 loss=1.3634 lr=0.000988 step=20 steps=125
+00:31:14 INFO    aether.train [-] train step epoch=2 loss=1.35 lr=0.000982 step=40 steps=125
+00:31:28 INFO    aether.train [-] train step epoch=2 loss=1.325 lr=0.000974 step=60 steps=125
+00:31:42 INFO    aether.train [-] train step epoch=2 loss=1.3018 lr=0.000965 step=80 steps=125
+00:31:55 INFO    aether.train [-] train step epoch=2 loss=1.286 lr=0.000954 step=100 steps=125
+00:32:09 INFO    aether.train [-] train step epoch=2 loss=1.2685 lr=0.000943 step=120 steps=125
+00:32:12 INFO    aether.train [-] train step epoch=2 loss=1.2648 lr=0.000939 step=125 steps=125
+00:32:15 INFO    aether.train [-] epoch complete epoch=2 epoch_seconds=88.98 train_loss=1.2648478221893311 train_samples=32000 val_accuracy=0.66825 val_loss=0.9465800323486329
+00:32:29 INFO    aether.train [-] train step epoch=3 loss=1.1387 lr=0.000926 step=20 steps=125
+00:32:43 INFO    aether.train [-] train step epoch=3 loss=1.1307 lr=0.000912 step=40 steps=125
+00:32:57 INFO    aether.train [-] train step epoch=3 loss=1.1166 lr=0.000896 step=60 steps=125
+00:33:11 INFO    aether.train [-] train step epoch=3 loss=1.1098 lr=0.00088 step=80 steps=125
+00:33:26 INFO    aether.train [-] train step epoch=3 loss=1.1039 lr=0.000862 step=100 steps=125
+00:33:40 INFO    aether.train [-] train step epoch=3 loss=1.0964 lr=0.000843 step=120 steps=125
+00:33:43 INFO    aether.train [-] train step epoch=3 loss=1.0959 lr=0.000838 step=125 steps=125
+00:33:46 INFO    aether.train [-] epoch complete epoch=3 epoch_seconds=90.6 train_loss=1.0959170007705687 train_samples=32000 val_accuracy=0.7395 val_loss=0.7896539134979248
+00:34:00 INFO    aether.train [-] train step epoch=4 loss=1.0013 lr=0.000818 step=20 steps=125
+00:34:14 INFO    aether.train [-] train step epoch=4 loss=1.0115 lr=0.000798 step=40 steps=125
+00:34:28 INFO    aether.train [-] train step epoch=4 loss=1.0164 lr=0.000776 step=60 steps=125
+00:34:42 INFO    aether.train [-] train step epoch=4 loss=1.0185 lr=0.000753 step=80 steps=125
+00:34:55 INFO    aether.train [-] train step epoch=4 loss=1.0159 lr=0.00073 step=100 steps=125
+00:35:09 INFO    aether.train [-] train step epoch=4 loss=1.0119 lr=0.000707 step=120 steps=125
+00:35:13 INFO    aether.train [-] train step epoch=4 loss=1.0116 lr=0.0007 step=125 steps=125
+00:35:15 INFO    aether.train [-] epoch complete epoch=4 epoch_seconds=89.68 train_loss=1.011632722377777 train_samples=32000 val_accuracy=0.7595 val_loss=0.7249853076934815
+00:35:29 INFO    aether.train [-] train step epoch=5 loss=0.945 lr=0.000676 step=20 steps=125
+00:35:44 INFO    aether.train [-] train step epoch=5 loss=0.9596 lr=0.000651 step=40 steps=125
+00:35:58 INFO    aether.train [-] train step epoch=5 loss=0.9593 lr=0.000626 step=60 steps=125
+00:36:13 INFO    aether.train [-] train step epoch=5 loss=0.9604 lr=0.0006 step=80 steps=125
+00:36:27 INFO    aether.train [-] train step epoch=5 loss=0.9583 lr=0.000574 step=100 steps=125
+00:36:41 INFO    aether.train [-] train step epoch=5 loss=0.9552 lr=0.000548 step=120 steps=125
+00:36:44 INFO    aether.train [-] train step epoch=5 loss=0.9545 lr=0.000541 step=125 steps=125
+00:36:47 INFO    aether.train [-] epoch complete epoch=5 epoch_seconds=91.53 train_loss=0.9545427098274231 train_samples=32000 val_accuracy=0.7805 val_loss=0.6868547496795654
+00:37:01 INFO    aether.train [-] train step epoch=6 loss=0.9153 lr=0.000515 step=20 steps=125
+00:37:15 INFO    aether.train [-] train step epoch=6 loss=0.912 lr=0.000488 step=40 steps=125
+00:37:29 INFO    aether.train [-] train step epoch=6 loss=0.9117 lr=0.000462 step=60 steps=125
+00:37:43 INFO    aether.train [-] train step epoch=6 loss=0.9112 lr=0.000435 step=80 steps=125
+00:37:57 INFO    aether.train [-] train step epoch=6 loss=0.9124 lr=0.000409 step=100 steps=125
+00:38:10 INFO    aether.train [-] train step epoch=6 loss=0.9118 lr=0.000383 step=120 steps=125
+00:38:14 INFO    aether.train [-] train step epoch=6 loss=0.9124 lr=0.000377 step=125 steps=125
+00:38:17 INFO    aether.train [-] epoch complete epoch=6 epoch_seconds=89.54 train_loss=0.9123755955696106 train_samples=32000 val_accuracy=0.77925 val_loss=0.6735325698852539
+00:38:31 INFO    aether.train [-] train step epoch=7 loss=0.8841 lr=0.000352 step=20 steps=125
+00:38:47 INFO    aether.train [-] train step epoch=7 loss=0.8838 lr=0.000327 step=40 steps=125
+00:39:01 INFO    aether.train [-] train step epoch=7 loss=0.8832 lr=0.000302 step=60 steps=125
+00:39:15 INFO    aether.train [-] train step epoch=7 loss=0.882 lr=0.000278 step=80 steps=125
+00:39:29 INFO    aether.train [-] train step epoch=7 loss=0.8819 lr=0.000255 step=100 steps=125
+00:39:44 INFO    aether.train [-] train step epoch=7 loss=0.8809 lr=0.000232 step=120 steps=125
+00:39:47 INFO    aether.train [-] train step epoch=7 loss=0.8809 lr=0.000226 step=125 steps=125
+00:39:50 INFO    aether.train [-] epoch complete epoch=7 epoch_seconds=93.27 train_loss=0.88094242811203 train_samples=32000 val_accuracy=0.7785 val_loss=0.6753410167694092
+00:40:03 INFO    aether.train [-] train step epoch=8 loss=0.8557 lr=0.000205 step=20 steps=125
+00:40:17 INFO    aether.train [-] train step epoch=8 loss=0.8616 lr=0.000184 step=40 steps=125
+00:40:31 INFO    aether.train [-] train step epoch=8 loss=0.8623 lr=0.000164 step=60 steps=125
+00:40:46 INFO    aether.train [-] train step epoch=8 loss=0.8624 lr=0.000145 step=80 steps=125
+00:41:02 INFO    aether.train [-] train step epoch=8 loss=0.862 lr=0.000126 step=100 steps=125
+00:41:17 INFO    aether.train [-] train step epoch=8 loss=0.8608 lr=0.000109 step=120 steps=125
+00:41:20 INFO    aether.train [-] train step epoch=8 loss=0.8602 lr=0.000105 step=125 steps=125
+00:41:23 INFO    aether.train [-] epoch complete epoch=8 epoch_seconds=93.27 train_loss=0.8602490191459655 train_samples=32000 val_accuracy=0.7865 val_loss=0.6567911148071289
+00:41:39 INFO    aether.train [-] train step epoch=9 loss=0.8555 lr=9e-05 step=20 steps=125
+00:41:53 INFO    aether.train [-] train step epoch=9 loss=0.8589 lr=7.5e-05 step=40 steps=125
+00:42:07 INFO    aether.train [-] train step epoch=9 loss=0.8579 lr=6.2e-05 step=60 steps=125
+00:42:21 INFO    aether.train [-] train step epoch=9 loss=0.8558 lr=5e-05 step=80 steps=125
+00:42:35 INFO    aether.train [-] train step epoch=9 loss=0.8555 lr=3.9e-05 step=100 steps=125
+00:42:49 INFO    aether.train [-] train step epoch=9 loss=0.8559 lr=2.9e-05 step=120 steps=125
+00:42:53 INFO    aether.train [-] train step epoch=9 loss=0.8563 lr=2.7e-05 step=125 steps=125
+00:42:56 INFO    aether.train [-] epoch complete epoch=9 epoch_seconds=92.62 train_loss=0.8563264346122742 train_samples=32000 val_accuracy=0.7875 val_loss=0.6580688343048096
+00:43:10 INFO    aether.train [-] train step epoch=10 loss=0.8424 lr=1.9e-05 step=20 steps=125
+00:43:25 INFO    aether.train [-] train step epoch=10 loss=0.8501 lr=1.3e-05 step=40 steps=125
+00:43:40 INFO    aether.train [-] train step epoch=10 loss=0.8498 lr=7e-06 step=60 steps=125
+00:43:54 INFO    aether.train [-] train step epoch=10 loss=0.8501 lr=4e-06 step=80 steps=125
+00:44:08 INFO    aether.train [-] train step epoch=10 loss=0.8491 lr=1e-06 step=100 steps=125
+00:44:23 INFO    aether.train [-] train step epoch=10 loss=0.8507 lr=0.0 step=120 steps=125
+00:44:26 INFO    aether.train [-] train step epoch=10 loss=0.8508 lr=0.0 step=125 steps=125
+00:44:29 INFO    aether.train [-] epoch complete epoch=10 epoch_seconds=93.39 train_loss=0.8508103837966919 train_samples=32000 val_accuracy=0.7885 val_loss=0.6562859516143799
+00:44:29 INFO    aether.train [-] training finished best_epoch=10 best_val_accuracy=0.7885 wall_clock_seconds=899.98
+
+best val accuracy: 0.7885 (epoch 10), wall 899.98s
+checkpoint: /home/arghya/Projects/AETHER-ML/artifacts/checkpoints/mobilenet_v3_small.pt

@@ -1,0 +1,29 @@
+INFO:     Started server process [155291]
+INFO:     Waiting for application startup.
+02:03:12 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:03:13 INFO    aether.models.registry [-] model loaded device=cpu model_id=lightweight:mobilenet_v3_small@1.0.0 parameters=1528106
+02:03:13 INFO    aether.api [-] application started device=cpu environment=development policy=cost_aware
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8011 (Press CTRL+C to quit)
+02:03:16 INFO    aether.api [93ba225cd18a4aa3] request method=GET ms=17.09 path=/health status=200
+INFO:     127.0.0.1:44570 - "GET /health HTTP/1.1" 200 OK
+02:03:18 INFO    aether.events [cb6916111b5a419d] routing.decision event=routing.decision event_payload={'prediction_id': 'b30c0b09b8b5404ca9071d3c26b4a286', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.173082, 'drift': 'none'}
+02:03:18 INFO    aether.events [cb6916111b5a419d] prediction.completed event=prediction.completed event_payload={'prediction_id': 'b30c0b09b8b5404ca9071d3c26b4a286', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.173082, 'latency_ms': 137.73}
+02:03:18 INFO    aether.api [cb6916111b5a419d] request method=POST ms=200.15 path=/api/v1/predict status=201
+INFO:     127.0.0.1:34986 - "POST /api/v1/predict HTTP/1.1" 201 Created
+02:03:18 INFO    aether.events [8c539ff09d3a4485] routing.decision event=routing.decision event_payload={'prediction_id': '321e529fea5b4c2b97bb3aa99ee5c121', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.035493, 'drift': 'none'}
+02:03:18 INFO    aether.events [8c539ff09d3a4485] prediction.completed event=prediction.completed event_payload={'prediction_id': '321e529fea5b4c2b97bb3aa99ee5c121', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.035493, 'latency_ms': 5.19}
+02:03:18 INFO    aether.api [8c539ff09d3a4485] request method=POST ms=9.04 path=/api/v1/predict status=201
+INFO:     127.0.0.1:34996 - "POST /api/v1/predict HTTP/1.1" 201 Created
+02:03:18 INFO    aether.events [873558478dde48e4] routing.decision event=routing.decision event_payload={'prediction_id': '0d8d3272019c435896e6514f8549b424', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.178441, 'drift': 'none'}
+02:03:18 INFO    aether.events [873558478dde48e4] prediction.completed event=prediction.completed event_payload={'prediction_id': '0d8d3272019c435896e6514f8549b424', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.178441, 'latency_ms': 8.17}
+02:03:18 INFO    aether.api [873558478dde48e4] request method=POST ms=11.42 path=/api/v1/predict status=201
+INFO:     127.0.0.1:35004 - "POST /api/v1/predict HTTP/1.1" 201 Created
+02:03:18 INFO    aether.events [76dbf9a330ca4aab] routing.decision event=routing.decision event_payload={'prediction_id': '37ff32efb1cb4fbea5dc03e2aa21dbd3', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.376048, 'drift': 'none'}
+02:03:18 INFO    aether.events [76dbf9a330ca4aab] prediction.completed event=prediction.completed event_payload={'prediction_id': '37ff32efb1cb4fbea5dc03e2aa21dbd3', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.376048, 'latency_ms': 5.26}
+02:03:18 INFO    aether.api [76dbf9a330ca4aab] request method=POST ms=13.25 path=/api/v1/predict status=201
+INFO:     127.0.0.1:35012 - "POST /api/v1/predict HTTP/1.1" 201 Created
+02:03:18 INFO    aether.events [4af8afb1ac214528] routing.decision event=routing.decision event_payload={'prediction_id': 'e73ef25f64db4aa8bce1b15bb5ce0348', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.275999, 'drift': 'none'}
+02:03:18 INFO    aether.events [4af8afb1ac214528] prediction.completed event=prediction.completed event_payload={'prediction_id': 'e73ef25f64db4aa8bce1b15bb5ce0348', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.275999, 'latency_ms': 4.95}
+02:03:18 INFO    aether.api [4af8afb1ac214528] request method=POST ms=10.73 path=/api/v1/predict status=201
+INFO:     127.0.0.1:35020 - "POST /api/v1/predict HTTP/1.1" 201 Created

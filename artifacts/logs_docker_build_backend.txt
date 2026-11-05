@@ -1,0 +1,235 @@
+ Image aether-backend Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 516B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.25kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 183B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [1/9] FROM docker.io/library/python:3.12-slim@sha256:b18b261e1b4974b4f321451ad5251ded85abb22c2b8b262da527dda1d031ab30
+#6 resolve docker.io/library/python:3.12-slim@sha256:b18b261e1b4974b4f321451ad5251ded85abb22c2b8b262da527dda1d031ab30 0.0s done
+#6 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 155.58kB done
+#5 DONE 0.0s
+
+#7 [2/9] RUN apt-get update     && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 curl     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [3/9] WORKDIR /app
+#8 CACHED
+
+#9 [4/9] COPY pyproject.toml README.md alembic.ini ./
+#9 DONE 0.1s
+
+#10 [5/9] COPY aether ./aether
+#10 DONE 0.1s
+
+#11 [6/9] COPY backend ./backend
+#11 DONE 0.0s
+
+#12 [7/9] COPY configs ./configs
+#12 DONE 0.0s
+
+#13 [8/9] RUN pip install --extra-index-url https://download.pytorch.org/whl/cpu .     && pip install "psycopg[binary]>=3.1"
+#13 1.013 Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cpu
+#13 1.013 Processing /app
+#13 1.015   Installing build dependencies: started
+#13 24.42   Installing build dependencies: finished with status 'done'
+#13 24.42   Getting requirements to build wheel: started
+#13 25.64   Getting requirements to build wheel: finished with status 'done'
+#13 25.65   Preparing metadata (pyproject.toml): started
+#13 26.86   Preparing metadata (pyproject.toml): finished with status 'done'
+#13 37.78 Collecting fastapi>=0.110 (from aether-ml==1.0.0)
+#13 43.00   Downloading fastapi-0.162.0-py3-none-any.whl.metadata (26 kB)
+#13 43.99 Collecting uvicorn>=0.27 (from uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 44.05   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#13 45.50 Collecting pydantic<3,>=2.6 (from aether-ml==1.0.0)
+#13 45.56   Downloading pydantic-2.14.2-py3-none-any.whl.metadata (137 kB)
+#13 47.39 Collecting SQLAlchemy<3,>=2.0 (from aether-ml==1.0.0)
+#13 47.44   Downloading sqlalchemy-2.1.8-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.7 kB)
+#13 48.29 Collecting alembic>=1.13 (from aether-ml==1.0.0)
+#13 48.35   Downloading alembic-1.20.1-py3-none-any.whl.metadata (7.3 kB)
+#13 49.88 Collecting numpy>=1.26 (from aether-ml==1.0.0)
+#13 49.94   Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+#13 51.04 Collecting scipy>=1.11 (from aether-ml==1.0.0)
+#13 51.09   Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+#13 52.18 Collecting scikit-learn>=1.4 (from aether-ml==1.0.0)
+#13 52.23   Downloading scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.3 kB)
+#13 54.13 Collecting pillow>=10.0 (from aether-ml==1.0.0)
+#13 54.20   Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+#13 55.02 Collecting pyyaml>=6.0 (from aether-ml==1.0.0)
+#13 55.07   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+#13 55.96 Collecting python-multipart>=0.0.9 (from aether-ml==1.0.0)
+#13 56.02   Downloading python_multipart-0.0.33-py3-none-any.whl.metadata (6.3 kB)
+#13 56.41 Collecting torch>=2.2 (from aether-ml==1.0.0)
+#13 61.70   Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.15.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (35 kB)
+#13 62.13 Collecting torchvision>=0.17 (from aether-ml==1.0.0)
+#13 62.22   Downloading https://download-r2.pytorch.org/whl/cpu/torchvision-0.29.2%2Bcpu-py3-none-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
+#13 63.03 Collecting Mako (from alembic>=1.13->aether-ml==1.0.0)
+#13 63.08   Downloading mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+#13 63.24 Collecting typing-extensions>=4.12 (from alembic>=1.13->aether-ml==1.0.0)
+#13 63.29   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#13 64.17 Collecting starlette>=0.46.0 (from fastapi>=0.110->aether-ml==1.0.0)
+#13 64.22   Downloading starlette-1.10.0-py3-none-any.whl.metadata (6.6 kB)
+#13 64.77 Collecting typing-inspection>=0.4.2 (from fastapi>=0.110->aether-ml==1.0.0)
+#13 64.82   Downloading typing_inspection-0.4.5-py3-none-any.whl.metadata (2.6 kB)
+#13 65.56 Collecting annotated-doc>=0.0.2 (from fastapi>=0.110->aether-ml==1.0.0)
+#13 65.61   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#13 65.97 Collecting opentelemetry-api>=1.44.0 (from fastapi>=0.110->aether-ml==1.0.0)
+#13 66.02   Downloading opentelemetry_api-1.45.2-py3-none-any.whl.metadata (1.4 kB)
+#13 67.02 Collecting annotated-types>=0.6.0 (from pydantic<3,>=2.6->aether-ml==1.0.0)
+#13 67.07   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#13 69.58 Collecting pydantic-core==2.50.2 (from pydantic<3,>=2.6->aether-ml==1.0.0)
+#13 69.63   Downloading pydantic_core-2.50.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.5 kB)
+#13 70.71 Collecting joblib>=1.4.0 (from scikit-learn>=1.4->aether-ml==1.0.0)
+#13 70.76   Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+#13 71.80 Collecting narwhals>=2.0.1 (from scikit-learn>=1.4->aether-ml==1.0.0)
+#13 71.86   Downloading narwhals-2.28.0-py3-none-any.whl.metadata (15 kB)
+#13 72.84 Collecting threadpoolctl>=3.5.0 (from scikit-learn>=1.4->aether-ml==1.0.0)
+#13 72.89   Downloading threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+#13 73.40 Collecting filelock (from torch>=2.2->aether-ml==1.0.0)
+#13 73.61   Downloading filelock-4.2.9-py3-none-any.whl.metadata (2.3 kB)
+#13 74.02 Collecting setuptools>=77.0.3 (from torch>=2.2->aether-ml==1.0.0)
+#13 74.19   Downloading setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)
+#13 74.70 Collecting sympy>=1.13.3 (from torch>=2.2->aether-ml==1.0.0)
+#13 74.75   Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+#13 75.06 Collecting networkx>=2.5.1 (from torch>=2.2->aether-ml==1.0.0)
+#13 75.22   Downloading networkx-3.7-py3-none-any.whl.metadata (6.7 kB)
+#13 75.48 Collecting jinja2 (from torch>=2.2->aether-ml==1.0.0)
+#13 75.78   Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#13 76.18 Collecting fsspec>=0.8.5 (from torch>=2.2->aether-ml==1.0.0)
+#13 76.34   Downloading fsspec-2026.9.0-py3-none-any.whl.metadata (10 kB)
+#13 77.30 Collecting click>=7.0 (from uvicorn>=0.27->uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 77.36   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#13 78.19 Collecting h11>=0.8 (from uvicorn>=0.27->uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 78.24   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#13 79.15 Collecting httptools>=0.8.0 (from uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 79.20   Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#13 80.05 Collecting python-dotenv>=0.13 (from uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 80.10   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#13 80.60 Collecting uvloop>=0.15.1 (from uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 80.73   Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+#13 81.76 Collecting watchfiles>=0.20 (from uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 81.81   Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#13 82.90 Collecting websockets>=13.0 (from uvicorn[standard]>=0.27->aether-ml==1.0.0)
+#13 82.95   Downloading websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#13 83.39 Collecting cloudpickle>=3.0 (from joblib>=1.4.0->scikit-learn>=1.4->aether-ml==1.0.0)
+#13 83.45   Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+#13 84.32 Collecting anyio<5,>=4.0.0 (from starlette>=0.46.0->fastapi>=0.110->aether-ml==1.0.0)
+#13 84.38   Downloading anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+#13 84.55 Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch>=2.2->aether-ml==1.0.0)
+#13 84.60   Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+#13 85.06 Collecting MarkupSafe>=2.0 (from jinja2->torch>=2.2->aether-ml==1.0.0)
+#13 85.12   Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#13 85.25 Collecting idna>=2.8 (from anyio<5,>=4.0.0->starlette>=0.46.0->fastapi>=0.110->aether-ml==1.0.0)
+#13 85.30   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#13 85.37 Downloading alembic-1.20.1-py3-none-any.whl (270 kB)
+#13 85.48 Downloading fastapi-0.162.0-py3-none-any.whl (148 kB)
+#13 85.55 Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+#13 87.57    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 8.4 MB/s eta 0:00:00
+#13 87.61 Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+#13 88.26    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 10.8 MB/s eta 0:00:00
+#13 88.31 Downloading pydantic-2.14.2-py3-none-any.whl (490 kB)
+#13 88.38 Downloading pydantic_core-2.50.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.2 MB)
+#13 88.59    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 10.2 MB/s eta 0:00:00
+#13 88.64 Downloading python_multipart-0.0.33-py3-none-any.whl (32 kB)
+#13 88.68 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+#13 88.77    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 7.9 MB/s eta 0:00:00
+#13 88.82 Downloading scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.2 MB)
+#13 89.92    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 8.3 MB/s eta 0:00:00
+#13 89.96 Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+#13 93.68    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 9.5 MB/s eta 0:00:00
+#13 93.73 Downloading sqlalchemy-2.1.8-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.7 MB)
+#13 94.26    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 8.8 MB/s eta 0:00:00
+#13 94.34 Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.15.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (209.5 MB)
+#13 108.6    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.5/209.5 MB 15.0 MB/s eta 0:00:00
+#13 108.8 Downloading https://download-r2.pytorch.org/whl/cpu/torchvision-0.29.2%2Bcpu-py3-none-manylinux_2_28_x86_64.whl (1.7 MB)
+#13 108.9    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 19.8 MB/s eta 0:00:00
+#13 109.0 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#13 109.0 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#13 109.1 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#13 109.1 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#13 109.2 Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+#13 109.2 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#13 109.3 Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (552 kB)
+#13 109.3    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 552.8/552.8 kB 12.5 MB/s eta 0:00:00
+#13 109.4 Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+#13 109.4 Downloading narwhals-2.28.0-py3-none-any.whl (490 kB)
+#13 109.5 Downloading networkx-3.7-py3-none-any.whl (2.1 MB)
+#13 109.7    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 11.1 MB/s eta 0:00:00
+#13 109.8 Downloading opentelemetry_api-1.45.2-py3-none-any.whl (60 kB)
+#13 109.8 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#13 109.9 Downloading setuptools-84.2.1-py3-none-any.whl (876 kB)
+#13 109.9    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 876.3/876.3 kB 9.8 MB/s eta 0:00:00
+#13 110.0 Downloading starlette-1.10.0-py3-none-any.whl (80 kB)
+#13 110.0 Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+#13 110.7    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 10.2 MB/s eta 0:00:00
+#13 110.7 Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+#13 110.7 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#13 110.8 Downloading typing_inspection-0.4.5-py3-none-any.whl (14 kB)
+#13 110.8 Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+#13 111.3    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 9.8 MB/s eta 0:00:00
+#13 111.3 Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+#13 111.4 Downloading websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (226 kB)
+#13 111.5 Downloading filelock-4.2.9-py3-none-any.whl (164 kB)
+#13 111.9 Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+#13 111.9 Downloading mako-1.4.3-py3-none-any.whl (80 kB)
+#13 112.0 Downloading anyio-4.16.0-py3-none-any.whl (134 kB)
+#13 112.0 Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+#13 112.1 Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#13 112.1 Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+#13 112.1    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 14.1 MB/s eta 0:00:00
+#13 112.2 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#13 113.1 Building wheels for collected packages: aether-ml
+#13 113.1   Building wheel for aether-ml (pyproject.toml): started
+#13 114.4   Building wheel for aether-ml (pyproject.toml): finished with status 'done'
+#13 114.4   Created wheel for aether-ml: filename=aether_ml-1.0.0-py3-none-any.whl size=96085 sha256=e9ea666f066cd05481f0238d248d5d0b27287816d47642f390956172da8a8052
+#13 114.4   Stored in directory: /tmp/pip-ephem-wheel-cache-2kodwmw7/wheels/54/1b/b7/aa63e25c8f14f4f2ae7b04e6097bdecb770e455c5c1ee0a600
+#13 114.4 Successfully built aether-ml
+#13 114.8 Installing collected packages: mpmath, websockets, uvloop, typing-extensions, threadpoolctl, sympy, setuptools, pyyaml, python-multipart, python-dotenv, pillow, numpy, networkx, narwhals, MarkupSafe, idna, httptools, h11, fsspec, filelock, cloudpickle, click, annotated-types, annotated-doc, uvicorn, typing-inspection, SQLAlchemy, scipy, pydantic-core, opentelemetry-api, Mako, joblib, jinja2, anyio, watchfiles, torch, starlette, scikit-learn, pydantic, alembic, torchvision, fastapi, aether-ml
+#13 139.3 Successfully installed Mako-1.4.3 MarkupSafe-3.0.4 SQLAlchemy-2.1.8 aether-ml-1.0.0 alembic-1.20.1 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.16.0 click-8.5.0 cloudpickle-3.1.2 fastapi-0.162.0 filelock-4.2.9 fsspec-2026.9.0 h11-0.16.0 httptools-0.9.0 idna-3.20 jinja2-3.1.6 joblib-1.6.0 mpmath-1.3.0 narwhals-2.28.0 networkx-3.7 numpy-2.5.4 opentelemetry-api-1.45.2 pillow-13.0.0 pydantic-2.14.2 pydantic-core-2.50.2 python-dotenv-1.2.4 python-multipart-0.0.33 pyyaml-6.0.3 scikit-learn-1.9.1 scipy-1.18.1 setuptools-84.2.1 starlette-1.10.0 sympy-1.14.0 threadpoolctl-3.7.0 torch-2.15.0+cpu torchvision-0.29.2+cpu typing-extensions-4.16.0 typing-inspection-0.4.5 uvicorn-0.54.0 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.4
+#13 139.3 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#13 145.6 Collecting psycopg>=3.1 (from psycopg[binary]>=3.1)
+#13 150.8   Downloading psycopg-3.3.8-py3-none-any.whl.metadata (4.4 kB)
+#13 150.8 Requirement already satisfied: typing-extensions>=4.6 in /usr/local/lib/python3.12/site-packages (from psycopg>=3.1->psycopg[binary]>=3.1) (4.16.0)
+#13 151.3 Collecting psycopg-binary==3.3.8 (from psycopg[binary]>=3.1)
+#13 151.3   Downloading psycopg_binary-3.3.8-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+#13 151.4 Downloading psycopg-3.3.8-py3-none-any.whl (216 kB)
+#13 151.7 Downloading psycopg_binary-3.3.8-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+#13 153.4    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 3.2 MB/s eta 0:00:00
+#13 153.6 Installing collected packages: psycopg-binary, psycopg
+#13 154.1 Successfully installed psycopg-3.3.8 psycopg-binary-3.3.8
+#13 154.1 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#13 DONE 155.3s
+
+#14 [9/9] RUN useradd --create-home --uid 10001 aether     && mkdir -p /app/artifacts/db /app/artifacts/uploads     && chown -R aether:aether /app
+#14 DONE 1.0s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 33.9s done
+#15 exporting manifest sha256:7db49627cadf561a0fcf7f720ee0d8deeb1a29d3c31ea38f68e5e6b3808a3584 done
+#15 exporting config sha256:38e55b4121f1c3c70a3559ef3d8632a43ec1154f75365793e92584e6b11dc057 done
+#15 exporting attestation manifest sha256:4dfd1cc061ea141bbd24d04fec0623820a6f42b8a780689b4ff65e3eede9f91c done
+#15 exporting manifest list sha256:dd283de359e7c30d092b08a46263769b05acf48a22d5b0f760816cbd4abb82c9 done
+#15 naming to docker.io/library/aether-backend:latest done
+#15 unpacking to docker.io/library/aether-backend:latest
+#15 unpacking to docker.io/library/aether-backend:latest 9.3s done
+#15 DONE 43.3s
+
+#16 resolving provenance for metadata file
+#16 DONE 0.0s
+ Image aether-backend Built 

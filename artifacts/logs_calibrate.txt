@@ -1,0 +1,30 @@
+02:07:25 INFO    aether.models.registry [-] model loaded device=cpu model_id=lightweight:mobilenet_v3_small@1.0.0 parameters=1528106
+02:07:26 INFO    aether.models.registry [-] model loaded device=cpu model_id=advanced:resnet50@1.0.0 parameters=23528522
+02:07:26 INFO    aether.data.cifar [-] loaded CIFAR-10 artefact path=cifar10.npz train_fingerprint=c5b8e1d062f7
+02:07:26 INFO    aether.data.cifar [-] reusing existing split assignment seed=42
+02:07:29 INFO    aether.uncertainty.calibration [-] temperature fitted ece_after=0.0207 ece_before=0.0759 model_id=lightweight:mobilenet_v3_small@1.0.0 nll_after=0.6009 nll_before=0.6402 temperature=0.752684
+02:07:29 INFO    aether.uncertainty.calibration [-] calibration artifact updated path=/home/arghya/Projects/AETHER-ML/artifacts/calibration/temperatures.json
+02:07:50 INFO    aether.uncertainty.calibration [-] temperature fitted ece_after=0.0125 ece_before=0.076 model_id=advanced:resnet50@1.0.0 nll_after=0.1835 nll_before=0.2373 temperature=0.70549
+02:07:50 INFO    aether.uncertainty.calibration [-] calibration artifact updated path=/home/arghya/Projects/AETHER-ML/artifacts/calibration/temperatures.json
+02:08:19 INFO    aether.calibrate [-] dev evidence collected samples=4000 split=cal_clean
+02:08:27 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_gaussian_noise
+02:08:35 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_gaussian_blur
+02:08:43 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_brightness
+02:08:50 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_contrast
+02:08:58 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_jpeg_compression
+02:09:06 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_pixelate
+02:09:06 INFO    aether.routing.risk_model [-] risk model fitted auc=0.8079 model_id=risk:lightweight:mobilenet_v3_small@1.0.0 positive_rate=0.4165
+02:09:27 INFO    aether.calibrate [-] dev evidence collected samples=4000 split=cal_clean_advanced
+02:09:33 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_gaussian_noise_advanced
+02:09:38 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_gaussian_blur_advanced
+02:09:44 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_brightness_advanced
+02:09:49 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_contrast_advanced
+02:09:54 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_jpeg_compression_advanced
+02:09:59 INFO    aether.calibrate [-] dev evidence collected samples=1000 split=cal_pixelate_advanced
+02:09:59 INFO    aether.routing.risk_model [-] risk model fitted auc=0.9017 model_id=risk:advanced:resnet50@1.0.0 positive_rate=0.2382
+02:10:00 INFO    aether.routing.risk_model [-] risk model fitted auc=0.7232 model_id=risk:advanced:resnet50@1.0.0:precall positive_rate=0.2382
+02:10:00 INFO    aether.routing.learned_policy [-] learned policy artifact written path=/home/arghya/Projects/AETHER-ML/artifacts/calibration/learned_policy.json samples=10000
+wrote /home/arghya/Projects/AETHER-ML/artifacts/reports/calibration.json
+temperature lightweight: 0.7527
+temperature advanced:    0.7055
+expected risk reduction: 0.1525

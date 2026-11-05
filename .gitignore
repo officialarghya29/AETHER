@@ -1,0 +1,59 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# ---- Secrets / environment ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---- Data (never commit datasets or derived tensors) ----
+data/raw/
+data/processed/
+data/references/*.npz
+data/references/*.npy
+!data/references/.gitkeep
+
+# ---- Model artifacts (never commit weights) ----
+artifacts/checkpoints/*.pt
+artifacts/checkpoints/*.pth
+artifacts/checkpoints/*.onnx
+artifacts/calibration/*.json
+artifacts/reference/*.npz
+artifacts/reference/*.npy
+artifacts/reports/*.json
+artifacts/reports/*.png
+artifacts/uploads/
+artifacts/db/*.db
+!artifacts/**/.gitkeep
+
+# ---- Node / frontend ----
+node_modules/
+dist/
+frontend/dist/
+*.local
+
+# ---- MLflow / notebooks ----
+mlruns/
+mlartifacts/
+.ipynb_checkpoints/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- Local database runtime files ----
+artifacts/db/*.db-shm
+artifacts/db/*.db-wal
+artifacts/db/*.db-journal

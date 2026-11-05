@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "model_id": "lightweight:mobilenet_v3_small@1.0.0",
+  "samples": 2000,
+  "embedding_dim": 576,
+  "projected_dim": 32,
+  "explained_variance": 0.5967726260807056,
+  "input_features": [
+    "brightness",
+    "contrast",
+    "sharpness",
+    "mean_r",
+    "mean_g",
+    "mean_b"
+  ],
+  "source": "cifar10 holdout split, first 2000 samples",
+  "dataset_fingerprint": "c5b8e1d062f7373a",
+  "built_at": "2026-11-04T19:26:08Z",
+  "seed": 42,
+  "class_histogram": [
+    237,
+    238,
+    216,
+    174,
+    181,
+    195,
+    218,
+    198,
+    178,
+    165
+  ],
+  "note": "Reference statistics define the no-shift condition. Drift at inference time is measured against this frozen window; it is never recomputed from live traffic."
+}

@@ -1,0 +1,61 @@
+name: aether
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: aether
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aether}
+      POSTGRES_DB: aether
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aether -d aether"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      AETHER_ENV: production
+      DATABASE_URL: postgresql+psycopg://aether:${POSTGRES_PASSWORD:-aether}@db:5432/aether
+      AETHER_ARTIFACTS_ROOT: /app/artifacts
+      AETHER_CORS_ORIGINS: http://localhost:8080
+      AETHER_API_TOKEN: ${AETHER_API_TOKEN:-}
+      AETHER_CPU_NAME: ${AETHER_CPU_NAME:-container}
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --log-config /dev/null"
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./configs:/app/configs:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

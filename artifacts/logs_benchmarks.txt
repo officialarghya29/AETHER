@@ -1,0 +1,57 @@
+02:13:02 INFO    aether.models.registry [-] model loaded device=cpu model_id=lightweight:mobilenet_v3_small@1.0.0 parameters=1528106
+02:13:03 INFO    aether.models.registry [-] model loaded device=cpu model_id=advanced:resnet50@1.0.0 parameters=23528522
+02:13:03 INFO    aether.data.cifar [-] loaded CIFAR-10 artefact path=cifar10.npz train_fingerprint=c5b8e1d062f7
+02:13:03 INFO    aether.data.cifar [-] reusing existing split assignment seed=42
+== clean test evaluation ==
+lightweight: acc=0.7874 ece=0.0218 brier=0.3018 aurc=0.0677 0.18 ms/img
+advanced: acc=0.9442 ece=0.0131 brier=0.0893 aurc=0.0119 2.10 ms/img
+== drift study ==
+  clean_dev              score=  0.22 detected=0.0
+  gaussian_noise_s1      score= 12.00 detected=1.0
+  gaussian_noise_s3      score= 12.00 detected=1.0
+  gaussian_noise_s5      score= 12.00 detected=1.0
+  gaussian_blur_s1       score=  4.10 detected=0.8
+  gaussian_blur_s3       score= 12.00 detected=1.0
+  gaussian_blur_s5       score= 12.00 detected=1.0
+  brightness_s1          score=  1.24 detected=0.0
+  brightness_s3          score= 11.19 detected=1.0
+  brightness_s5          score= 12.00 detected=1.0
+  contrast_s1            score=  5.17 detected=0.96
+  contrast_s3            score= 12.00 detected=1.0
+  contrast_s5            score= 12.00 detected=1.0
+  pixelate_s1            score= 12.00 detected=1.0
+  pixelate_s3            score= 12.00 detected=1.0
+  pixelate_s5            score= 12.00 detected=1.0
+  jpeg_compression_s1    score=  6.23 detected=1.0
+  jpeg_compression_s3    score=  8.86 detected=1.0
+  jpeg_compression_s5    score= 12.00 detected=1.0
+== routing study ==
+02:16:18 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:18 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:18 INFO    aether.routing.controller [-] router configured policy=rule_based
+02:16:19 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:19 INFO    aether.routing.controller [-] router configured policy=rule_based
+02:16:19 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:20 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:20 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:20 INFO    aether.routing.controller [-] router configured policy=rule_based
+02:16:21 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:21 INFO    aether.routing.controller [-] router configured policy=cost_aware
+02:16:21 INFO    aether.routing.controller [-] router configured policy=cost_aware
+  always_light       cov=1.000 acc=0.6550 lat=   0.18ms cost=3.450
+  always_advanced    cov=1.000 acc=0.8456 lat=   2.05ms cost=2.544
+  fixed_threshold    cov=0.279 acc=0.9588 lat=   0.26ms cost=1.594
+  uncertainty_only   cov=0.251 acc=0.9602 lat=   0.18ms cost=1.598
+  shift_aware        cov=1.000 acc=0.8413 lat=   1.70ms cost=2.328
+  aether             cov=0.653 acc=0.9382 lat=   0.78ms cost=1.390
+  ablate no_uncertainty       cov=0.000 acc=0.0000 cost=2.000
+  ablate no_drift_signal      cov=0.867 acc=0.9056 cost=1.577
+  ablate no_cost_awareness    cov=1.000 acc=0.8413 cost=2.328
+  ablate no_disagreement      cov=0.652 acc=0.9387 cost=1.387
+  ablate no_escalation        cov=0.481 acc=0.9002 cost=1.518
+  ablate clean_only_subset    cov=0.963 acc=0.9460 cost=1.062
+== robustness (n=2500) ==
+  lightweight: clean=0.7916 mean_corrupt=0.5318 worst=0.2108 mean_ece=0.1622
+  advanced: clean=0.9468 mean_corrupt=0.6961 worst=0.1904 mean_ece=0.1312
+wrote /home/arghya/Projects/AETHER-ML/artifacts/reports/benchmarks.json
+wrote /home/arghya/Projects/AETHER-ML/artifacts/reports/BENCHMARKS.md

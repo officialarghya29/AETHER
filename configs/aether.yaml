@@ -1,0 +1,117 @@
+# AETHER-ML central configuration.
+# Every value here is validated at startup by aether.config.AetherConfig.
+# Environment overrides use the AETHER__SECTION__KEY pattern (e.g. AETHER__RUNTIME__SEED=7).
+
+application:
+  name: AETHER-ML
+  environment: development          # development | staging | production
+  api_prefix: /api/v1
+  version: 1.0.0
+
+runtime:
+  device: auto                      # auto | cpu | cuda
+  seed: 42
+  max_batch_size: 64
+  num_threads: 8
+  deterministic: true
+
+data:
+  root: data
+  dataset: cifar10
+  image_size: 64
+  num_workers: 8
+  eval_batch_size: 256
+  splits:
+    train: 32000
+    validation: 4000
+    calibration: 4000
+    routing_dev: 5000
+    holdout: 5000
+  split_seed: 42
+  reference_window_size: 2000
+
+models:
+  lightweight:
+    architecture: mobilenet_v3_small
+    role: lightweight
+    checkpoint: artifacts/checkpoints/mobilenet_v3_small.pt
+    version: 1.0.0
+    num_classes: 10
+  advanced:
+    architecture: resnet50
+    role: advanced
+    checkpoint: artifacts/checkpoints/resnet50.pt
+    version: 1.0.0
+    num_classes: 10
+
+uncertainty:
+  temperature_artifact: artifacts/calibration/temperatures.json
+  calibration_bins: 15
+  epsilon: 1.0e-12
+  mc_dropout:
+    enabled: false
+    samples: 8
+
+drift:
+  reference_artifact: artifacts/reference/reference_stats.npz
+  evaluation_window_size: 200
+  embedding_components: 32
+  psi_bins: 10
+  ks_alpha: 0.01
+  mmd_alpha: 0.01
+  mmd_max_samples: 400
+  mmd_permutations: 64             # permutation null for the MMD p-value
+  severity:
+    low: 1.5
+    moderate: 3.0
+    severe: 6.0
+  min_window_size: 30
+
+routing:
+  policy: cost_aware                # rule_based | cost_aware | learned
+  risk_model_artifact: artifacts/calibration/risk_model.json
+  accept_risk: 0.10
+  escalate_risk: 0.45
+  high_risk: 0.60
+  latency_budget_ms: 250.0
+  advanced_latency_estimate_ms: 40.0   # pre-flight estimate for ResNet50 on CPU, measured
+  max_escalations: 1
+  enable_escalation: true
+  enable_abstention: true
+  review_available: true
+  reviewer_error_rate: 0.02        # residual risk after a verified human label
+  costs:
+    error: 10.0                     # cost of an incorrect automatic prediction
+    escalate: 1.0                   # relative cost of one advanced-model call
+    review: 4.0                     # relative cost of a human review
+    abstain: 2.0                    # cost of refusing to answer
+    correct: 1.0                    # reward for a correct automatic prediction
+  learned_policy:
+    artifact: artifacts/calibration/learned_policy.json
+    min_expected_benefit: 0.05     # escalation must buy at least this much risk reduction
+
+monitoring:
+  enabled: true
+  log_level: INFO
+  json_logs: false
+  experiment_tracking: local        # local | mlflow
+  mlflow_tracking_uri: file:./mlruns
+  mlflow_experiment: aether-ml
+
+storage:
+  database_url: sqlite:///./artifacts/db/aether.db
+  artifacts_root: artifacts
+  upload_dir: artifacts/uploads
+  upload_max_bytes: 5242880
+  upload_max_pixels: 4096000
+  atomic_store: true
+
+api:
+  cors_origins:
+    - http://localhost:5173
+    - http://127.0.0.1:5173
+  request_timeout_ms: 30000
+  rate_limit_per_minute: 120
+  auth:
+    enabled: false
+    token_env: AETHER_API_TOKEN
