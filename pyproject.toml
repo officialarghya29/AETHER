@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "AETHER-ML — Adaptive Evidence-based Trust, Evaluation & Recovery for machine learning systems."
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
+license = { text = "Proprietary" }
 authors = [{ name = "Arghya Bose" }]
 classifiers = [
     "Programming Language :: Python :: 3.12",

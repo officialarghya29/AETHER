@@ -5,6 +5,25 @@ project adheres to semantic versioning.
 
 ## [1.0.0] — 2026-11-05
 
+### Changed
+
+- **Licence is now proprietary.** All rights reserved by Arghya Bose; the MIT grant was removed and
+  the README, package metadata and dashboard package now state the same terms.
+- **README is now evidence-first.** It carries generated figures (`experiments/make_figures.py`),
+  dashboard screenshots, side-by-side policy tables, the routing mathematics and an explicit
+  real-versus-unverified section.
+
+### Fixed
+
+- **Escalation was priced with stale risk.** After a completed second call, the cost-aware policy
+  still scored ACCEPT with the first-call risk, so it paid for escalation and then abstained. ACCEPT
+  and HUMAN_REVIEW are now priced with the measured advanced risk.
+- **Cold-start latency blocked escalation.** The first (weight-loading) latency sample was recorded
+  as steady state, which made every later escalation look unaffordable; warm-up samples are now
+  excluded.
+- **Reliability chart rendered empty in the dashboard** because recharts line animation never
+  completed before paint; the chart is now drawn without animation.
+
 ### Added
 
 - **Reliability pipeline.** One orchestration path (`aether.pipeline.ReliabilityPipeline`) shared by

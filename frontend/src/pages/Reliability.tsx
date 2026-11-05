@@ -98,8 +98,8 @@ export default function Reliability() {
                   <Tooltip
                     contentStyle={{ background: '#0e1523', border: '1px solid #1a2436', borderRadius: 8, color: '#e8eefc' }}
                   />
-                  <Line type="monotone" dataKey="perfect" stroke="#1a2436" strokeDasharray="4 4" dot={false} name="perfect calibration" />
-                  <Line type="monotone" dataKey="accuracy" stroke="#3ee6d0" strokeWidth={2} dot={{ r: 3 }} name="observed accuracy" />
+                  <Line type="monotone" dataKey="perfect" stroke="#1a2436" strokeDasharray="4 4" dot={false} isAnimationActive={false} name="perfect calibration" />
+                  <Line type="monotone" dataKey="accuracy" stroke="#3ee6d0" strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} name="observed accuracy" />
                 </LineChart>
               </ResponsiveContainer>
             </div>

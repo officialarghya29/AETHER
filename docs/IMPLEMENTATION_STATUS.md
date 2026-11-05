@@ -100,7 +100,7 @@ comparison, non-root container, no secrets in the repository. Documented in `doc
 
 ## Phase 13 — Testing
 
-- `python -m pytest` → **96 passed**.
+- `python -m pytest` → **98 passed**.
 - `python -m ruff check aether backend training experiments tests scripts` → clean.
 - Coverage of unit, integration, failure and API contract paths. No test was skipped or weakened to
   make the suite pass; three defects were found and fixed through failing tests instead.
@@ -113,8 +113,11 @@ and six ablations. Protocol: test split for reporting only; routing data from th
 
 ## Phase 15 — Documentation
 
-`README.md` plus `docs/` PRD, SRS, TDD, ARCHITECTURE, ALGORITHMS, EXPERIMENTS, API, SECURITY,
-DEPLOYMENT, DECISIONS, CONTRIBUTING, IMPLEMENTATION_STATUS, HANDOFF.
+`README.md` (evidence-first showcase: generated figures, dashboard screenshots, policy comparison
+and routing mathematics) plus `docs/` PRD, SRS, TDD, ARCHITECTURE, ALGORITHMS, EXPERIMENTS, API,
+SECURITY, DEPLOYMENT, DECISIONS, CONTRIBUTING, IMPLEMENTATION_STATUS, HANDOFF. Every README figure is
+rendered from the recorded artifacts by `experiments/make_figures.py` (`make figures`), so charts
+cannot drift away from the measurements; dashboard screenshots live in `docs/assets/`.
 
 ## Phase 16 — Deployment
 
@@ -129,10 +132,11 @@ orchestrated here*.
 ## Phase 17 — Release engineering
 
 `.github/workflows/ci.yml` (lint, typecheck, tests, frontend build, both container builds),
-`CHANGELOG.md`, `LICENSE`, conventional commits, single `main` branch.
+`CHANGELOG.md`, proprietary `LICENSE` (all rights reserved by Arghya Bose), conventional commits,
+single `main` branch.
 
 **Verified locally:** `ruff check` clean, `mypy aether` clean over 52 modules (pydantic plugin
-enabled), `pytest` 99 passing. **Not verified:** the workflow itself has not executed on GitHub
+enabled), `pytest` 98 passing. **Not verified:** the workflow itself has not executed on GitHub
 Actions from this machine.
 
 ## Honest summary

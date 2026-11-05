@@ -1,178 +1,371 @@
-# AETHER-ML
+<img src="docs/assets/hero.png" alt="AETHER-ML — adaptive evidence-based trust, evaluation and recovery" width="100%" />
 
-**Adaptive Evidence-based Trust, Evaluation & Recovery for ML systems.**
+<p align="center">
+  <img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-a855f7?style=flat-square" />
+  <img alt="python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-22d3ee?style=flat-square" />
+  <img alt="tests 98 passing" src="https://img.shields.io/badge/tests-98%20passing-a3e635?style=flat-square" />
+  <img alt="mypy clean" src="https://img.shields.io/badge/mypy-52%20modules%20clean-22d3ee?style=flat-square" />
+  <img alt="torch 2.13 cpu" src="https://img.shields.io/badge/torch-2.13%20%C2%B7%20cpu-fbbf24?style=flat-square" />
+</p>
 
-A reliability layer for computer-vision inference: every prediction carries calibrated uncertainty,
-drift evidence and a cost-aware routing decision — answer with the fast model, escalate to the
-strong model, send to a human, or abstain.
+**AETHER-ML** is a reliability layer for computer-vision inference. Every prediction ships with a
+calibrated error probability, live drift evidence, and a routing decision — answer with the fast
+model, escalate to the strong one, send it to a human, or refuse. No vibes-based routing. Receipts,
+not claims.
 
-```
-evidence → calibrated risk → decision → audit trail
-```
-
-No fabricated metrics. Every number below was produced on this machine, on a held-out CIFAR-10
-split that was never used for tuning.
+> **the flex, in four numbers**
+> `94.42%` accuracy from the escalation tier · `65.3%` of traffic answered at `93.82%` accuracy ·
+> `1.39` expected cost per image vs `2.54` for always-strong · `0.000` false alarms on clean drift windows.
+> All measured on this machine, on splits that were never used for tuning.
 
 ---
 
-## Why
+## the problem
 
-A single model serving production traffic has two failure modes that accuracy cannot describe:
-it is confidently wrong, and it silently degrades when the world shifts. AETHER-ML treats each
-prediction as an evidence-gathering problem — uncertainty, input quality, distribution shift and
-model disagreement are measured, fused into a calibrated error probability, and priced against
-explicit costs before an answer is emitted.
+A model in production fails in two ways accuracy cannot describe: it is **confidently wrong**, and it
+**silently decays** when the world shifts. A single number on a leaderboard tells you neither. So
+AETHER treats each prediction as evidence gathering — uncertainty, input quality, distribution shift
+and cross-model disagreement — fuses that evidence into a calibrated `P(wrong)`, prices every
+possible action against explicit costs, and emits the decision *with its justification attached*.
 
-The system is a two-tier fleet: a **lightweight** MobileNetV3-Small for the common case and an
-**advanced** ResNet50 as an escalation target. The routing policy decides per request whether the
-second call is worth its latency and cost.
+The fleet is deliberately two-tier: a **MobileNetV3-Small** that eats the easy 65 %, and a
+**ResNet50** that gets paid for only when the economics say it is worth it.
 
-## Measured results
+## what it actually does
 
-CPU only (8 threads, torch 2.13.0+cpu), 10,000-image official CIFAR-10 test split, fingerprint
-`f9b1e2130bab680d`, seed 42. Full report: [`artifacts/reports/BENCHMARKS.md`](artifacts/reports/BENCHMARKS.md)
-(regenerate with `make benchmarks`).
+<img src="docs/assets/architecture.png" alt="AETHER pipeline architecture" width="100%" />
 
-| model | params | accuracy | macro F1 | ECE | Brier | AURC | latency |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| lightweight · MobileNetV3-Small | 1.53 M | 0.7874 | 0.7879 | 0.0218 | 0.3018 | 0.0677 | 0.18 ms |
-| advanced · ResNet50 | 23.53 M | 0.9442 | 0.9440 | 0.0131 | 0.0893 | 0.0119 | 2.11 ms |
+One `ReliabilityPipeline` object drives the API, the CLI and the offline experiments. A benchmark row
+and a served request execute the same code path — there is no second implementation to drift out of
+sync.
 
-Calibration (temperature scaling fitted on a dedicated 4,000-sample split):
+```text
+image → validate/decode → light inference → calibrate → uncertainty
+      → drift tests (PSI · KS · MMD · behaviour) → risk heads
+      → router: ACCEPT | ESCALATE → re-decide | HUMAN_REVIEW | ABSTAIN
+      → evidence + decision + audit record (SQLite / PostgreSQL)
+```
 
-| model | temperature | ECE before | ECE after |
-| --- | --- | --- | --- |
-| lightweight | 0.7527 | 0.0759 | 0.0207 |
-| advanced | 0.7055 | 0.0760 | 0.0125 |
+## the receipts
 
-Selective prediction is the point: at 50 % coverage the lightweight model's error rate falls from
-21.3 % to 4.5 %, and the advanced model's from 5.6 % to 0.8 %.
+CPU only — 8 threads, torch `2.13.0+cpu`, numpy `2.5.2`, Python `3.12.3`, seed 42. Official CIFAR-10
+test split, 10,000 images, pixel fingerprint `f9b1e2130bab680d`. Regenerate everything with
+`make benchmarks && make figures`.
 
-**Robustness** — 10 corruption families × 5 severities, 2,500 stratified images per condition:
+### tier head-to-head
 
-| model | clean | mean corrupted | worst corrupted | mean ECE (corrupted) |
+| model | params | accuracy | macro F1 | ECE ↓ | Brier ↓ | NLL ↓ | AURC ↓ | latency |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **lightweight** · MobileNetV3-Small | 1.53 M | 0.7874 | 0.7879 | 0.0218 | 0.3018 | 0.6319 | 0.0677 | 0.18 ms |
+| **advanced** · ResNet50 | 23.53 M | 0.9442 | 0.9440 | 0.0131 | 0.0893 | 0.2029 | 0.0119 | 2.10 ms |
+
+15.4× the parameters buys 15.7 accuracy points and 11.6× the latency. That gap is exactly why
+routing exists.
+
+<img src="docs/assets/pareto.png" alt="Accuracy and latency frontier" width="100%" />
+
+### calibration is the cheat code
+
+One temperature per model, fitted on a dedicated 4,000-sample split. That is it. No architecture
+change, no retraining, no extra parameters at inference.
+
+<img src="docs/assets/calibration-gain.png" alt="Calibration error before and after temperature scaling" width="100%" />
+
+<img src="docs/assets/reliability.png" alt="Reliability diagrams for both tiers" width="100%" />
+
+| model | temperature | ECE raw softmax | ECE calibrated | reduction |
 | --- | --- | --- | --- | --- |
-| lightweight | 0.7916 | 0.5318 | 0.2108 | 0.1622 |
-| advanced | 0.9468 | 0.6961 | 0.1904 | 0.1312 |
+| lightweight | 0.7527 | 0.0691 | 0.0218 | 68.5 % |
+| advanced | 0.7055 | 0.0725 | 0.0131 | 81.9 % |
 
-**Drift detection** — PSI on input statistics, per-component KS and permutation MMD on embeddings,
-plus KS/χ² on prediction behaviour; Bonferroni-combined into one score with bands at 1.5 / 3.0 / 6.0.
-Measured over 200-sample windows, 6 corruption families × 3 severities:
+### abstention is a feature
+
+Rank by confidence, answer the top slice, refuse the rest. At 50 % coverage the light tier's error
+rate drops from 21.3 % to 4.5 %; the strong tier's from 5.6 % to 0.8 %.
+
+<img src="docs/assets/selective-risk.png" alt="Risk coverage curves" width="100%" />
+
+| coverage | light risk | advanced risk |
+| --- | --- | --- |
+| 50 % | 0.0446 | 0.0078 |
+| 70 % | 0.0970 | 0.0094 |
+| 80 % | 0.1315 | 0.0115 |
+| 90 % | 0.1661 | 0.0224 |
+| 100 % | 0.2126 | 0.0558 |
+
+### corruption sweep — 10 families × 5 severities
+
+2,500 stratified images per condition. The light tier loses 26 points of accuracy on average; the
+strong tier loses 25 — robustness is *not* something scale hands you for free.
+
+<img src="docs/assets/robustness.png" alt="Corruption robustness by family" width="100%" />
+
+| tier | clean | mean corrupted | worst corrupted | mean corrupted ECE |
+| --- | --- | --- | --- | --- |
+| lightweight | 0.7916 | 0.5318 | 0.2108 (gaussian noise, sev 5) | 0.1622 |
+| advanced | 0.9468 | 0.6961 | 0.1904 (pixelate, sev 5) | 0.1312 |
+
+Pixelate breaks the strong model harder than noise does — a genuinely useful thing to know before
+you deploy to a CDN that re-encodes images.
+
+### drift forensics
+
+PSI on input statistics, per-component KS + permutation MMD on embeddings, KS/χ² on prediction
+behaviour — Bonferroni-combined into one score with bands at 1.5 / 3.0 / 6.0, measured over
+200-image windows.
+
+<img src="docs/assets/drift-map.png" alt="Drift detection rate by family and severity" width="100%" />
 
 | condition | detection rate |
 | --- | --- |
-| clean development windows (false positives) | 0.000 |
+| clean development windows (false positives) | **0.000** |
 | severity 1 | 0.793 |
 | severity 3 | 1.000 |
 | severity 5 | 1.000 |
 
-**Learned risk models** — logistic regression over calibrated uncertainty and the drift band, fitted
-on the 4,000-sample calibration split (the routing-dev split is reserved for evaluating policies):
+Detection means *the input distribution moved*. It does **not** mean accuracy dropped — labels are
+absent in production, and AETHER never pretends otherwise.
 
-| head | evidence | ROC AUC | Brier |
+### routing — the money shot
+
+6,000-image replay (5,000 clean + 3,000 corrupted routing-dev samples). Costs are relative units:
+error 10, escalate 1, review 4, abstain 2.
+
+<img src="docs/assets/routing-races.png" alt="Routing policies: cost versus coverage" width="100%" />
+
+| policy | coverage | acc on answered | escalated | abstain | ms/img | cost/img |
+| --- | --- | --- | --- | --- | --- | --- |
+| always_light | 1.000 | 0.6550 | 0.000 | 0.000 | 0.18 | 3.450 |
+| always_advanced | 1.000 | 0.8456 | 0.000 | 0.000 | 2.05 | 2.544 |
+| fixed_threshold | 0.279 | 0.9588 | 0.741 | 0.721 | 0.26 | 1.594 |
+| uncertainty_only | 0.251 | 0.9602 | 0.000 | 0.749 | 0.18 | 1.598 |
+| shift_aware | 1.000 | 0.8413 | 0.741 | 0.000 | 1.70 | 2.328 |
+| **AETHER** | **0.653** | **0.9382** | 0.316 | 0.347 | 0.78 | **1.390** |
+
+Read it like this: AETHER answers two-thirds of a deliberately ugly stream at 93.82 % accuracy —
+28 points above the model it runs on — for 45 % less than always using the strong model, and it
+declines the third it cannot vouch for instead of guessing. An abstention is charged its cost and
+counted as **uncovered**, never as wrong.
+
+<img src="docs/assets/ablations.png" alt="Ablation deltas" width="100%" />
+
+| variant | coverage | acc on answered | cost/img | Δ vs full |
+| --- | --- | --- | --- | --- |
+| no_uncertainty | 0.000 | — | 2.000 | +0.610 |
+| no_drift_signal | 0.867 | 0.9056 | 1.577 | +0.187 |
+| no_cost_awareness | 1.000 | 0.8413 | 2.328 | +0.938 |
+| no_disagreement | 0.652 | 0.9387 | 1.387 | −0.003 |
+| no_escalation | 0.481 | 0.9002 | 1.518 | +0.128 |
+| clean_only_subset* | 0.963 | 0.9460 | 1.062 | different stream |
+
+\* clean-only evaluation, shown for context; its cost is not comparable to the mixed-stream rows.
+
+Removing cost-awareness is the most expensive mistake you can make — it costs almost a full unit per
+image. Removing drift signal is cheap on this stream and hides its value; drift only earns its keep
+when the world actually moves.
+
+### the risk heads
+
+Three logistic heads, three jobs. All fitted on the **calibration** split; the routing-dev split is
+reserved for evaluating policies, never for fitting them.
+
+<img src="docs/assets/risk-heads.png" alt="Risk head AUCs" width="100%" />
+
+| head | evidence available | predicts | ROC AUC |
 | --- | --- | --- | --- |
-| lightweight error risk | first call | 0.8079 | 0.1761 |
-| advanced error risk | after the second call | 0.9017 | 0.1049 |
-| advanced pre-call risk | first call, prices escalation | 0.7232 | 0.1575 |
+| lightweight | first call | light tier wrong | 0.8079 |
+| **pre-call advanced** | first call | strong tier wrong | 0.7232 |
+| advanced | after second call | strong tier wrong | 0.9017 |
 
-The pre-call head is the honest one: it estimates what the advanced model *would* get wrong from
-evidence available **before** paying for the call. Mean predicted risk reduction 0.1525.
+The pre-call head is the honest one: it prices escalation from evidence that exists **before** the
+second call is paid for. Mean predicted risk reduction across escalations: `0.1525`.
 
-**Routing** — replay over 5,000 clean routing-dev samples plus 3,000 corrupted ones (gaussian
-noise, brightness; severity 4), which was never used to fit any head. Costs: error 10, escalate 1,
-review 4, abstain 2.
+### confusion, side by side
 
-| policy | coverage | acc on answered | escalated | review | abstain | ms/img | cost/img |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| always_light | 1.000 | 0.6550 | 0.000 | 0.000 | 0.000 | 0.18 | 3.450 |
-| always_advanced | 1.000 | 0.8456 | 0.000 | 0.000 | 0.000 | 2.05 | 2.544 |
-| fixed_threshold | 0.279 | 0.9588 | 0.741 | 0.000 | 0.721 | 0.26 | 1.594 |
-| uncertainty_only | 0.251 | 0.9602 | 0.000 | 0.000 | 0.749 | 0.18 | 1.598 |
-| shift_aware | 1.000 | 0.8413 | 0.741 | 0.000 | 0.000 | 1.70 | 2.328 |
-| **aether** | **0.653** | **0.9382** | 0.316 | 0.000 | 0.347 | 0.78 | **1.390** |
+<img src="docs/assets/confusion.png" alt="Normalised confusion matrices" width="100%" />
 
-AETHER answers 65.3 % of the stream at 93.8 % accuracy — 28 points above the fast model it runs
-on — for 40 % of the cost of always using the strong model, at 0.78 ms per image. It abstains on the
-third of traffic it cannot vouch for instead of guessing; abstentions are charged the abstention cost
-and counted as uncovered, never as wrong.
+Cat ↔ dog is the expensive confusion in both tiers; the strong model mostly fixes ship ↔ airplane
+and automobile ↔ truck.
 
-Ablations isolate what each signal buys:
+## the theory
 
-| variant | coverage | acc on answered | cost/img |
-| --- | --- | --- | --- |
-| no_uncertainty | 0.000 | — | 2.000 |
-| no_drift_signal | 0.867 | 0.9056 | 1.577 |
-| no_cost_awareness | 1.000 | 0.8413 | 2.328 |
-| no_disagreement | 0.652 | 0.9387 | 1.387 |
-| no_escalation | 0.481 | 0.9002 | 1.518 |
-| clean_only_subset | 0.963 | 0.9460 | 1.062 |
+<details open>
+<summary><b>1 · temperature scaling</b></summary>
 
-## Architecture
+$$
+p_i = \operatorname{softmax}\!\left(\frac{z_i}{T}\right), \qquad
+T^\* = \arg\min_T \; -\sum_{n=1}^{N} \log p_{y_n}(x_n; T)
+$$
 
-```
-                    ┌──────────────────────────────────────────────────────────┐
-  image ──────────► │  ReliabilityPipeline  (one object, three entry points)    │
-                    │                                                          │
-                    │  1  validate · decode · quality signals                  │
-                    │  2  lightweight inference ──► logits ──► temperature     │
-                    │  3  uncertainty: entropy · max-prob · margin             │
-                    │  4  drift monitor: PSI · KS · MMD · behaviour            │
-                    │  5  error-risk model ──► P(wrong) per candidate model    │
-                    │  6  routing: accept │ escalate │ review │ abstain        │
-                    │  7  escalate ──► advanced inference ──► re-decide        │
-                    │  8  persist evidence, decision, audit record             │
-                    └───────────────┬──────────────────────┬───────────────────┘
-                                    │                      │
-                        FastAPI /api/v1            CLI (aether predict)
-                                    │                      │
-                          React dashboard          experiments/run_benchmarks.py
-```
+Fitted on the calibration split only. `T > 1` softens an overconfident model; `T < 1` sharpens an
+underconfident one. Both tiers here land below 1 (`0.75`, `0.71`) — they were *under*confident at
+64 px.
+</details>
 
-The API, the CLI and the offline experiments call the *same* pipeline, so a benchmark row and a
-served request follow identical code paths — no second implementation to drift out of sync.
+<details>
+<summary><b>2 · uncertainty features</b></summary>
+
+$$
+H(p) = -\sum_k p_k \log p_k, \qquad
+\tilde{H}(p) = \frac{H(p)}{\log K}, \qquad
+\mathrm{MSP} = \max_k p_k, \qquad
+m = p_{(1)} - p_{(2)}
+$$
+
+Entropy is the base signal, normalised entropy makes it comparable across label spaces, MSP and
+margin capture the geometry near the decision boundary.
+</details>
+
+<details>
+<summary><b>3 · calibration error</b></summary>
+
+$$
+\mathrm{ECE} = \sum_{b=1}^{B} \frac{|B_b|}{N}\,\bigl|\,\mathrm{acc}(B_b) - \mathrm{conf}(B_b)\,\bigr|
+$$
+
+15 equal-width confidence bins. ECE is reported, never optimised directly — optimising ECE is how
+you get a well-calibrated model that is still wrong in the same places.
+</details>
+
+<details>
+<summary><b>4 · selective risk</b></summary>
+
+Rank by confidence, accept the top `c` fraction:
+
+$$
+\mathrm{risk}(c) = \mathbb{P}\bigl(\hat{y} \neq y \mid \text{confidence} \ge \tau_c\bigr),
+\qquad
+\mathrm{AURC} = \int_0^1 \mathrm{risk}(c)\,dc
+$$
+
+Lower AURC means the model knows what it does not know. This is the metric that matters for
+abstention-based systems, and it is reported for both tiers.
+</details>
+
+<details>
+<summary><b>5 · drift composite</b></summary>
+
+$$
+S = \max\Bigl(\;\mathrm{PSI}_{\text{input}},\;
+\max_j \mathrm{KS}_{j}^{\text{embedding}},\;
+\mathrm{MMD}^2_{\text{perm}},\;
+\chi^2_{\text{behaviour}}\Bigr),
+\qquad
+p_{\text{adj}} = \min\bigl(1,\; m \cdot p_{\min}\bigr)
+$$
+
+The KS statistics are Bonferroni-corrected across the PCA components actually tested, so a lucky
+component cannot fake a drift alert. Bands: `none < 1.5 ≤ low < 3.0 ≤ moderate < 6.0 ≤ severe`.
+A clean window scores 0.22 on average here; a severity-3 corruption crosses the moderate band every
+time.
+</details>
+
+<details>
+<summary><b>6 · risk model</b></summary>
+
+$$
+P(\text{wrong} \mid x) = \sigma\!\left(w^\top \phi(x) + b\right),
+\qquad
+\phi(x) = [\,H,\ \mathrm{MSP},\ m,\ \mathbb{1}_{\text{shift}},\, \mathbb{1}_{\text{disagree}}\,]
+$$
+
+Fitted with L2-regularised logistic regression on the calibration split. The first-call and pre-call
+heads exclude disagreement — it does not exist before a second model runs, and including it would
+leak the escalation's own outcome. Drift score is excluded everywhere: development data has only two
+drift levels, so its coefficient is not identified.
+</details>
+
+<details>
+<summary><b>7 · routing utility</b></summary>
+
+$$
+\begin{aligned}
+U_{\text{accept}}   &= (1-r_l)\,c_{\text{correct}} - r_l\,c_{\text{error}} \\
+U_{\text{escalate}} &= (1-r_a)\,c_{\text{correct}} - r_a\,c_{\text{error}} - c_{\text{escalate}} \\
+U_{\text{review}}   &= (1-r_l\rho)\,c_{\text{correct}} - (r_l\rho)\,c_{\text{error}} - c_{\text{review}} \\
+U_{\text{abstain}}  &= -c_{\text{abstain}}
+\end{aligned}
+$$
+
+Feasibility is applied **before** utility: escalation is removed when the escalation cap is spent,
+the model is missing, or the latency budget cannot absorb the measured latency. An over-budget answer
+is a failure, not a slow success. After the second call has actually run, ACCEPT and HUMAN_REVIEW are
+priced with the **measured** advanced risk — otherwise the router pays for an answer and then
+declines to use it.
+</details>
+
+<details>
+<summary><b>8 · the honest bit</b></summary>
+
+A pre-call estimate of the strong model's error is not free information: AUC 0.72 is a real signal but
+a weak one. Occasionally AETHER pays for escalation and then still abstains, because the strong model
+turned out to be less certain than the estimate implied. That is visible in the cost column, and it is
+the correct behaviour — the alternative is to force an answer the evidence does not support.
+</details>
+
+## the console
+
+Eight pages, one source of truth: every figure on screen is read from an artifact or from the
+database, never hardcoded.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/dashboard-overview.png" alt="Overview" /></td>
+<td width="50%"><img src="docs/assets/dashboard-routing.png" alt="Routing intelligence" /></td>
+</tr>
+<tr>
+<td><img src="docs/assets/dashboard-reliability.png" alt="Model reliability" /></td>
+<td><img src="docs/assets/dashboard-drift.png" alt="Drift monitoring" /></td>
+</tr>
+<tr>
+<td><img src="docs/assets/dashboard-experiments.png" alt="Experiment centre" /></td>
+<td><img src="docs/assets/dashboard-reviews.png" alt="Human review" /></td>
+</tr>
+</table>
+
+## stack
 
 | layer | technology |
 | --- | --- |
-| core | Python 3.11, NumPy, SciPy, scikit-learn, PyTorch |
+| core | Python 3.11+, NumPy, SciPy, scikit-learn, PyTorch |
 | serving | FastAPI, SQLAlchemy 2, Alembic, SQLite / PostgreSQL |
-| dashboard | React 18, TypeScript, Vite, recharts |
+| dashboard | React 18, TypeScript, Vite, recharts, Tailwind |
 | ops | Docker Compose, nginx, GitHub Actions |
-| quality | pytest (98 tests), ruff, mypy clean over `aether/` |
+| quality | pytest (98 passing), ruff clean, mypy clean over `aether/` (52 modules) |
 
-## Quickstart
+## quickstart
 
 ```bash
 git clone https://github.com/officialarghya29/AETHER.git && cd AETHER
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-make data          # materialise CIFAR-10 into data/raw (not committed)
-make train         # fine-tune both tiers        ~60 min CPU
-make calibrate     # temperatures + risk models
-make reference     # freeze the drift reference window
-make benchmarks    # full reliability study
+make data        # materialise CIFAR-10 into data/raw (never committed)
+make train       # fine-tune both tiers        ~60 min CPU
+make calibrate   # temperatures + the three risk heads
+make reference   # freeze the drift reference window
+make benchmarks  # full reliability study
+make figures     # render every chart in this README from the recorded results
 ```
 
 Serve it:
 
 ```bash
-make migrate       # create the schema
-make api           # http://localhost:8000/docs
-make frontend      # http://localhost:5173
+make migrate     # create the schema
+make api         # http://localhost:8000/docs
+make frontend    # http://localhost:5173
 ```
 
-Or the whole stack: `make docker-up`.
-
-Single-shot inference from the terminal:
+Or the whole stack: `make docker-up`. Single shot from the terminal:
 
 ```bash
 aether status
 aether predict path/to/image.png --json
 ```
 
-## API surface
+## api surface
 
-All routes are under `/api/v1`.
+All routes live under `/api/v1`.
 
 | method | path | purpose |
 | --- | --- | --- |
@@ -185,42 +378,39 @@ All routes are under `/api/v1`.
 | `GET` | `/drift/status`, `/drift/events` | live drift state and history |
 | `GET` | `/routing/metrics` | action mix, escalation and abstention rates |
 | `GET`/`POST` | `/reviews`, `/feedback` | human verification queue and labelled feedback |
-| `GET` | `/reports/{name}` | generated benchmark artifacts |
+| `GET` | `/reports/{name}` | allow-listed generated benchmark artifacts |
 
 Interactive schema at `/docs`; design notes in [`docs/API.md`](docs/API.md).
 
-## Dashboard
+## reproducibility contract
 
-Eight pages over the same evidence store: Overview, Live Inference, Uncertainty & Reliability,
-Drift Monitoring, Routing Intelligence, Failure Diagnosis, Human Review, Experiment Centre.
-
-## Reproducibility contract
-
-Splits are fixed by seed and persisted with a SHA-256 fingerprint of the pixel arrays:
-
-```
+```text
 train 32,000 · validation 4,000 · calibration 4,000 · routing_dev 5,000 · holdout 5,000
 official test 10,000 — reported only, never tuned
 ```
 
-Temperatures are fitted on `calibration`; risk models on `calibration`, evaluated on `routing_dev`;
-routing thresholds and drift bands chosen on `routing_dev`; the reference window comes from
-`holdout`. The test split is touched once, for the reported numbers.
+- temperatures fitted on `calibration`
+- risk heads fitted on `calibration`, evaluated on `routing_dev`
+- routing thresholds and drift bands chosen on `routing_dev`
+- drift reference frozen from `holdout`
+- the test split is touched once, for the numbers above
 
-## Limitations
+Splits are persisted with a SHA-256 fingerprint of the pixel arrays, so "same split" is checkable,
+not a promise.
 
-- CIFAR-10 at 64 px only. Nothing here is validated on natural-resolution or domain-specific imagery.
-- 10 of the 15 CIFAR-10-C corruption families are implemented; the remainder are listed as out of
-  scope in [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md).
-- No adversarial robustness testing.
-- Human review is simulated with a 2 % residual reviewer error rate — no real reviewer study.
-- Drift detection says the input distribution moved, not that accuracy dropped; no label-free
-  accuracy guarantee is claimed.
-- Risk models are per-fleet and must be refitted for new architectures or label spaces.
-- Feedback is stored and exportable, but retraining is a manual, deliberate step.
-- API authentication is configurable and disabled by default for local use.
+## what's real, what's not
 
-## Documentation
+**Real and reproduced here:** training, calibration, drift study, routing replay, ablations, API,
+dashboard, container images, test suite.
+
+**Implemented but not exercised in this environment:** the compose stack against PostgreSQL (images
+build and the API runs against SQLite), and the GitHub Actions workflow (written, not run on Actions).
+
+**Out of scope, stated plainly:** natural-resolution imagery, adversarial robustness, a real human
+reviewer study (2 % residual error is assumed), label-free accuracy guarantees from drift alone, and
+5 of the 15 CIFAR-10-C corruption families.
+
+## docs
 
 | document | contents |
 | --- | --- |
@@ -235,6 +425,8 @@ routing thresholds and drift bands chosen on `routing_dev`; the reference window
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | local, container and production paths |
 | [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md) | what is built, verified, or planned |
 
-## License
+## license
 
-MIT — © 2026 Arghya Bose. See [`LICENSE`](LICENSE).
+**Proprietary — all rights reserved.** Copyright © 2026 Arghya Bose. This repository is not open
+source: no use, copying, modification, distribution, or derivative work is permitted without prior
+written consent. See [`LICENSE`](LICENSE).

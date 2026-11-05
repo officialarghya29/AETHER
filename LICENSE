@@ -1,21 +1,35 @@
-MIT License
+Copyright (c) 2026 Arghya Bose. All rights reserved.
 
-Copyright (c) 2026 Arghya Bose
+AETHER-ML — Adaptive Evidence-based Trust, Evaluation & Recovery for ML systems
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+PROPRIETARY AND CONFIDENTIAL
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+This software, together with its source code, documentation, models, artefacts,
+figures, and any associated materials (collectively, the "Work"), is the sole
+and exclusive property of Arghya Bose (the "Owner").
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+No licence, right, or permission of any kind is granted, whether expressly, by
+implication, by estoppel, or otherwise. Without the prior written consent of the
+Owner, you may not:
+
+  1. copy, reproduce, or store the Work in any form or medium;
+  2. modify, adapt, translate, or create derivative works from the Work;
+  3. distribute, publish, sublicense, sell, rent, lease, or otherwise make the
+     Work available to any third party;
+  4. use the Work, in whole or in part, for any commercial or non-commercial
+     purpose, including training, evaluation, or benchmarking of other systems;
+  5. remove, obscure, or alter any copyright, attribution, or proprietary
+     notice contained in the Work.
+
+Access to the Work does not transfer ownership of any intellectual property.
+All title, copyright, database rights, and other intellectual property rights
+in the Work remain vested in the Owner.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE OWNER BE LIABLE
+FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE WORK OR THE
+USE OF THE WORK.
+
+For licensing enquiries, contact Arghya Bose <officialarghya29@gmail.com>.

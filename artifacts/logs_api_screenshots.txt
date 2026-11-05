@@ -1,0 +1,310 @@
+INFO:     Started server process [425667]
+INFO:     Waiting for application startup.
+11:33:10 INFO    aether.routing.controller [-] router configured policy=cost_aware
+11:33:12 INFO    aether.models.registry [-] model loaded device=cpu model_id=lightweight:mobilenet_v3_small@1.0.0 parameters=1528106
+11:33:12 INFO    aether.api [-] application started device=cpu environment=development policy=cost_aware
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8021 (Press CTRL+C to quit)
+11:33:20 INFO    aether.api [35c9204dc754489a] request method=GET ms=20.52 path=/api/v1/health status=200
+INFO:     127.0.0.1:48154 - "GET /api/v1/health HTTP/1.1" 200 OK
+11:33:49 INFO    aether.events [5b6ecf11808a4b75] routing.decision event=routing.decision event_payload={'prediction_id': '4abbd2472abd4fcebdb5e545962bc300', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.047207, 'drift': 'none'}
+11:33:49 INFO    aether.events [5b6ecf11808a4b75] prediction.completed event=prediction.completed event_payload={'prediction_id': '4abbd2472abd4fcebdb5e545962bc300', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.047207, 'latency_ms': 84.91}
+11:33:49 INFO    aether.api [5b6ecf11808a4b75] request method=POST ms=154.72 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.models.registry [77a0a6c4faa14772] model loaded device=cpu model_id=advanced:resnet50@1.0.0 parameters=23528522
+11:33:50 INFO    aether.events [77a0a6c4faa14772] routing.decision event=routing.decision event_payload={'prediction_id': '8300dc81d859469b9f637ccdfa2da347', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.006898, 'drift': 'none'}
+11:33:50 INFO    aether.events [77a0a6c4faa14772] prediction.completed event=prediction.completed event_payload={'prediction_id': '8300dc81d859469b9f637ccdfa2da347', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.006898, 'latency_ms': 742.09}
+11:33:50 INFO    aether.api [77a0a6c4faa14772] request method=POST ms=750.64 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [239bd490cdcf448d] routing.decision event=routing.decision event_payload={'prediction_id': '09586d7332e34b028ae033be180e0087', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.136136, 'drift': 'none'}
+11:33:50 INFO    aether.events [239bd490cdcf448d] prediction.completed event=prediction.completed event_payload={'prediction_id': '09586d7332e34b028ae033be180e0087', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.136136, 'latency_ms': 12.77}
+11:33:50 INFO    aether.api [239bd490cdcf448d] request method=POST ms=31.24 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [6b948d4898cf4871] routing.decision event=routing.decision event_payload={'prediction_id': '3a0ad62694d24c6b8886e4c1558117f3', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.009997, 'drift': 'none'}
+11:33:50 INFO    aether.events [6b948d4898cf4871] prediction.completed event=prediction.completed event_payload={'prediction_id': '3a0ad62694d24c6b8886e4c1558117f3', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.009997, 'latency_ms': 61.11}
+11:33:50 INFO    aether.api [6b948d4898cf4871] request method=POST ms=71.34 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [63d8253fefef4ed6] routing.decision event=routing.decision event_payload={'prediction_id': '1d678e173e7e41d2a1e1b5e025fb6d5a', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.09823, 'drift': 'none'}
+11:33:50 INFO    aether.events [63d8253fefef4ed6] prediction.completed event=prediction.completed event_payload={'prediction_id': '1d678e173e7e41d2a1e1b5e025fb6d5a', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.09823, 'latency_ms': 11.5}
+11:33:50 INFO    aether.api [63d8253fefef4ed6] request method=POST ms=17.71 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [b52059c5ae944387] routing.decision event=routing.decision event_payload={'prediction_id': 'c3123cdb990c485a95260663a24f5069', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.090155, 'drift': 'none'}
+11:33:50 INFO    aether.events [b52059c5ae944387] prediction.completed event=prediction.completed event_payload={'prediction_id': 'c3123cdb990c485a95260663a24f5069', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.090155, 'latency_ms': 10.7}
+11:33:50 INFO    aether.api [b52059c5ae944387] request method=POST ms=17.48 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [432d37ccaece427e] routing.decision event=routing.decision event_payload={'prediction_id': '832149590d4e4fcfade65ffc560c8b47', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.115581, 'drift': 'none'}
+11:33:50 INFO    aether.events [432d37ccaece427e] prediction.completed event=prediction.completed event_payload={'prediction_id': '832149590d4e4fcfade65ffc560c8b47', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.115581, 'latency_ms': 10.36}
+11:33:50 INFO    aether.api [432d37ccaece427e] request method=POST ms=16.92 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [8ce51959a53244e9] routing.decision event=routing.decision event_payload={'prediction_id': 'c5bebed51a08494193146cd00a4a4406', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.137868, 'drift': 'none'}
+11:33:50 INFO    aether.events [8ce51959a53244e9] prediction.completed event=prediction.completed event_payload={'prediction_id': 'c5bebed51a08494193146cd00a4a4406', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.137868, 'latency_ms': 10.74}
+11:33:50 INFO    aether.api [8ce51959a53244e9] request method=POST ms=16.2 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [20352163c1dd4083] routing.decision event=routing.decision event_payload={'prediction_id': '6f61d648e3724a678b77bb6593e1deeb', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.073591, 'drift': 'none'}
+11:33:50 INFO    aether.events [20352163c1dd4083] prediction.completed event=prediction.completed event_payload={'prediction_id': '6f61d648e3724a678b77bb6593e1deeb', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.073591, 'latency_ms': 14.42}
+11:33:50 INFO    aether.api [20352163c1dd4083] request method=POST ms=20.88 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [59a08ef7de0c4ee5] routing.decision event=routing.decision event_payload={'prediction_id': '3c6c80d2f5f443a29dc6c910837604e8', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.045568, 'drift': 'none'}
+11:33:50 INFO    aether.events [59a08ef7de0c4ee5] prediction.completed event=prediction.completed event_payload={'prediction_id': '3c6c80d2f5f443a29dc6c910837604e8', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.045568, 'latency_ms': 57.2}
+11:33:50 INFO    aether.api [59a08ef7de0c4ee5] request method=POST ms=64.33 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [b64c485cb51b4e16] routing.decision event=routing.decision event_payload={'prediction_id': 'a7f8d47b9beb41f88509288847c5733b', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.122282, 'drift': 'none'}
+11:33:50 INFO    aether.events [b64c485cb51b4e16] prediction.completed event=prediction.completed event_payload={'prediction_id': 'a7f8d47b9beb41f88509288847c5733b', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.122282, 'latency_ms': 11.37}
+11:33:50 INFO    aether.api [b64c485cb51b4e16] request method=POST ms=17.63 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [8a4778098f7a4718] routing.decision event=routing.decision event_payload={'prediction_id': 'fbe7ee1106a14977908c19488a8d3557', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.012329, 'drift': 'none'}
+11:33:50 INFO    aether.events [8a4778098f7a4718] prediction.completed event=prediction.completed event_payload={'prediction_id': 'fbe7ee1106a14977908c19488a8d3557', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.012329, 'latency_ms': 54.29}
+11:33:50 INFO    aether.api [8a4778098f7a4718] request method=POST ms=62.71 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [ed6823e2aada43c1] routing.decision event=routing.decision event_payload={'prediction_id': '57bea646206d464da76c790a348245fe', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.066018, 'drift': 'none'}
+11:33:50 INFO    aether.events [ed6823e2aada43c1] prediction.completed event=prediction.completed event_payload={'prediction_id': '57bea646206d464da76c790a348245fe', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.066018, 'latency_ms': 12.66}
+11:33:50 INFO    aether.api [ed6823e2aada43c1] request method=POST ms=19.83 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [e6fc8dda1dce4bfb] routing.decision event=routing.decision event_payload={'prediction_id': '33d7c1dc5de243ccac15ccb8aeca12e6', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.006647, 'drift': 'none'}
+11:33:50 INFO    aether.events [e6fc8dda1dce4bfb] prediction.completed event=prediction.completed event_payload={'prediction_id': '33d7c1dc5de243ccac15ccb8aeca12e6', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.006647, 'latency_ms': 55.55}
+11:33:50 INFO    aether.api [e6fc8dda1dce4bfb] request method=POST ms=63.33 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:50 INFO    aether.events [c28b9c8b5ab0411b] routing.decision event=routing.decision event_payload={'prediction_id': 'df79ded8ee37442c9d1828d640bf6c58', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.105677, 'drift': 'none'}
+11:33:50 INFO    aether.events [c28b9c8b5ab0411b] prediction.completed event=prediction.completed event_payload={'prediction_id': 'df79ded8ee37442c9d1828d640bf6c58', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.105677, 'latency_ms': 12.95}
+11:33:50 INFO    aether.api [c28b9c8b5ab0411b] request method=POST ms=20.42 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [e12d79e00769460a] routing.decision event=routing.decision event_payload={'prediction_id': '3375bb5f4c4b4f7ca28bd86f2e51c144', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.00832, 'drift': 'none'}
+11:33:51 INFO    aether.events [e12d79e00769460a] prediction.completed event=prediction.completed event_payload={'prediction_id': '3375bb5f4c4b4f7ca28bd86f2e51c144', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.00832, 'latency_ms': 58.26}
+11:33:51 INFO    aether.api [e12d79e00769460a] request method=POST ms=66.75 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [c2381dc378474b9d] routing.decision event=routing.decision event_payload={'prediction_id': '1790f08ecea24b28b5758796d8d30a36', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.037758, 'drift': 'none'}
+11:33:51 INFO    aether.events [c2381dc378474b9d] prediction.completed event=prediction.completed event_payload={'prediction_id': '1790f08ecea24b28b5758796d8d30a36', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.037758, 'latency_ms': 11.55}
+11:33:51 INFO    aether.api [c2381dc378474b9d] request method=POST ms=18.29 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [c8f6270c472f476c] routing.decision event=routing.decision event_payload={'prediction_id': '53facec3f58e4ccb80cea74b18b16a3e', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.009162, 'drift': 'none'}
+11:33:51 INFO    aether.events [c8f6270c472f476c] prediction.completed event=prediction.completed event_payload={'prediction_id': '53facec3f58e4ccb80cea74b18b16a3e', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.009162, 'latency_ms': 50.24}
+11:33:51 INFO    aether.api [c8f6270c472f476c] request method=POST ms=58.4 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [3189a62023f74500] routing.decision event=routing.decision event_payload={'prediction_id': '409eb62a6c8348579be760d82296a9b3', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.005556, 'drift': 'none'}
+11:33:51 INFO    aether.events [3189a62023f74500] prediction.completed event=prediction.completed event_payload={'prediction_id': '409eb62a6c8348579be760d82296a9b3', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.005556, 'latency_ms': 53.02}
+11:33:51 INFO    aether.api [3189a62023f74500] request method=POST ms=60.72 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [48c13ee6743c4859] routing.decision event=routing.decision event_payload={'prediction_id': 'e3dc4f419b164e328ec734f548050655', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.030881, 'drift': 'none'}
+11:33:51 INFO    aether.events [48c13ee6743c4859] prediction.completed event=prediction.completed event_payload={'prediction_id': 'e3dc4f419b164e328ec734f548050655', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.030881, 'latency_ms': 15.69}
+11:33:51 INFO    aether.api [48c13ee6743c4859] request method=POST ms=22.55 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [3cb4eafd560246db] routing.decision event=routing.decision event_payload={'prediction_id': 'da0d3fc87c7c49b3b034961e81d997f5', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.096836, 'drift': 'none'}
+11:33:51 INFO    aether.events [3cb4eafd560246db] prediction.completed event=prediction.completed event_payload={'prediction_id': 'da0d3fc87c7c49b3b034961e81d997f5', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.096836, 'latency_ms': 13.12}
+11:33:51 INFO    aether.api [3cb4eafd560246db] request method=POST ms=20.03 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [0fa4c0aa8b7d4982] routing.decision event=routing.decision event_payload={'prediction_id': 'ac04186a17614cdfa7540432377a45b0', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.010137, 'drift': 'none'}
+11:33:51 INFO    aether.events [0fa4c0aa8b7d4982] prediction.completed event=prediction.completed event_payload={'prediction_id': 'ac04186a17614cdfa7540432377a45b0', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.010137, 'latency_ms': 57.47}
+11:33:51 INFO    aether.api [0fa4c0aa8b7d4982] request method=POST ms=65.91 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [52b4281aefea4a71] routing.decision event=routing.decision event_payload={'prediction_id': '88b67b79f97248a584b2ca425d6f3c98', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.008079, 'drift': 'none'}
+11:33:51 INFO    aether.events [52b4281aefea4a71] prediction.completed event=prediction.completed event_payload={'prediction_id': '88b67b79f97248a584b2ca425d6f3c98', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.008079, 'latency_ms': 51.4}
+11:33:51 INFO    aether.api [52b4281aefea4a71] request method=POST ms=59.09 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [f499458c063f49fe] routing.decision event=routing.decision event_payload={'prediction_id': '2dac1acd851d4fbbba4f8204a6d7b629', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.240299, 'drift': 'none'}
+11:33:51 INFO    aether.events [f499458c063f49fe] prediction.completed event=prediction.completed event_payload={'prediction_id': '2dac1acd851d4fbbba4f8204a6d7b629', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.240299, 'latency_ms': 54.53}
+11:33:51 INFO    aether.api [f499458c063f49fe] request method=POST ms=64.48 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [deea97abbe334af0] routing.decision event=routing.decision event_payload={'prediction_id': '5f265d40c9534116881eb0403a769dd2', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.006353, 'drift': 'none'}
+11:33:51 INFO    aether.events [deea97abbe334af0] prediction.completed event=prediction.completed event_payload={'prediction_id': '5f265d40c9534116881eb0403a769dd2', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.006353, 'latency_ms': 53.89}
+11:33:51 INFO    aether.api [deea97abbe334af0] request method=POST ms=61.83 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [b639330b86224c41] routing.decision event=routing.decision event_payload={'prediction_id': 'ccbc578287bd4dc2924d42c6ae62d40f', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.014994, 'drift': 'none'}
+11:33:51 INFO    aether.events [b639330b86224c41] prediction.completed event=prediction.completed event_payload={'prediction_id': 'ccbc578287bd4dc2924d42c6ae62d40f', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.014994, 'latency_ms': 56.57}
+11:33:51 INFO    aether.api [b639330b86224c41] request method=POST ms=65.78 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [c11ae68e30cf44b2] routing.decision event=routing.decision event_payload={'prediction_id': 'ddd6567b46dc466d8039dbe210995b5d', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.036623, 'drift': 'none'}
+11:33:51 INFO    aether.events [c11ae68e30cf44b2] prediction.completed event=prediction.completed event_payload={'prediction_id': 'ddd6567b46dc466d8039dbe210995b5d', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.036623, 'latency_ms': 12.78}
+11:33:51 INFO    aether.api [c11ae68e30cf44b2] request method=POST ms=20.16 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [3430a6953b274759] routing.decision event=routing.decision event_payload={'prediction_id': 'c09dd140e85a4c4b8fe5c629e08b456a', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.006972, 'drift': 'none'}
+11:33:51 INFO    aether.events [3430a6953b274759] prediction.completed event=prediction.completed event_payload={'prediction_id': 'c09dd140e85a4c4b8fe5c629e08b456a', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.006972, 'latency_ms': 51.91}
+11:33:51 INFO    aether.api [3430a6953b274759] request method=POST ms=58.72 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [f282df5cf55b4a30] routing.decision event=routing.decision event_payload={'prediction_id': '96c1527ad49f4dcf87467da1307e81dc', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.03211, 'drift': 'none'}
+11:33:51 INFO    aether.events [f282df5cf55b4a30] prediction.completed event=prediction.completed event_payload={'prediction_id': '96c1527ad49f4dcf87467da1307e81dc', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.03211, 'latency_ms': 11.37}
+11:33:51 INFO    aether.api [f282df5cf55b4a30] request method=POST ms=16.48 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [1137c699f408474d] routing.decision event=routing.decision event_payload={'prediction_id': 'b78766ff196541879341bba708d69be6', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.008227, 'drift': 'none'}
+11:33:51 INFO    aether.events [1137c699f408474d] prediction.completed event=prediction.completed event_payload={'prediction_id': 'b78766ff196541879341bba708d69be6', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.008227, 'latency_ms': 54.77}
+11:33:51 INFO    aether.api [1137c699f408474d] request method=POST ms=61.1 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [6d63415286084dcf] routing.decision event=routing.decision event_payload={'prediction_id': '9936fca33cf942969a926a29320fce07', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.014632, 'drift': 'none'}
+11:33:51 INFO    aether.events [6d63415286084dcf] prediction.completed event=prediction.completed event_payload={'prediction_id': '9936fca33cf942969a926a29320fce07', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.014632, 'latency_ms': 48.25}
+11:33:51 INFO    aether.api [6d63415286084dcf] request method=POST ms=56.82 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [038e13128fd74a36] routing.decision event=routing.decision event_payload={'prediction_id': '9063de9be220444fbb8a4c821f4c5b05', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.045222, 'drift': 'none'}
+11:33:51 INFO    aether.events [038e13128fd74a36] prediction.completed event=prediction.completed event_payload={'prediction_id': '9063de9be220444fbb8a4c821f4c5b05', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.045222, 'latency_ms': 9.38}
+11:33:51 INFO    aether.api [038e13128fd74a36] request method=POST ms=14.03 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [787a452a9386454f] routing.decision event=routing.decision event_payload={'prediction_id': '7bbae2e0c84945ccad95d0b79a74715d', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.398323, 'drift': 'none'}
+11:33:51 INFO    aether.events [787a452a9386454f] prediction.completed event=prediction.completed event_payload={'prediction_id': '7bbae2e0c84945ccad95d0b79a74715d', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.398323, 'latency_ms': 50.33}
+11:33:51 INFO    aether.api [787a452a9386454f] request method=POST ms=62.69 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [4e5f51ab417943aa] routing.decision event=routing.decision event_payload={'prediction_id': '8d82920828ec4b88bbeb931b8911626c', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.006357, 'drift': 'none'}
+11:33:51 INFO    aether.events [4e5f51ab417943aa] prediction.completed event=prediction.completed event_payload={'prediction_id': '8d82920828ec4b88bbeb931b8911626c', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.006357, 'latency_ms': 54.63}
+11:33:51 INFO    aether.api [4e5f51ab417943aa] request method=POST ms=61.74 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:51 INFO    aether.events [275db1787f0b4130] routing.decision event=routing.decision event_payload={'prediction_id': '06c078a6e71149a9ba6b3f630589be18', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.015739, 'drift': 'none'}
+11:33:51 INFO    aether.events [275db1787f0b4130] prediction.completed event=prediction.completed event_payload={'prediction_id': '06c078a6e71149a9ba6b3f630589be18', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.015739, 'latency_ms': 42.38}
+11:33:51 INFO    aether.api [275db1787f0b4130] request method=POST ms=49.92 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:52 INFO    aether.events [e37ceab8076f4a54] routing.decision event=routing.decision event_payload={'prediction_id': '45ab73a794c347d4a579cdd10fd5a97d', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.025958, 'drift': 'none'}
+11:33:52 INFO    aether.events [e37ceab8076f4a54] prediction.completed event=prediction.completed event_payload={'prediction_id': '45ab73a794c347d4a579cdd10fd5a97d', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.025958, 'latency_ms': 60.27}
+11:33:52 INFO    aether.api [e37ceab8076f4a54] request method=POST ms=69.2 path=/api/v1/predict status=201
+INFO:     127.0.0.1:60096 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:33:52 INFO    aether.api [53bf9c0f8fb14658] request method=GET ms=21.85 path=/api/v1/routing/metrics status=200
+INFO:     127.0.0.1:60102 - "GET /api/v1/routing/metrics HTTP/1.1" 200 OK
+11:34:13 INFO    aether.events [2416f373312d4e03] routing.decision event=routing.decision event_payload={'prediction_id': 'bfa508adbab44f5aa16dfe1ead307d2a', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.249366, 'drift': 'none'}
+11:34:13 INFO    aether.events [2416f373312d4e03] prediction.completed event=prediction.completed event_payload={'prediction_id': 'bfa508adbab44f5aa16dfe1ead307d2a', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.249366, 'latency_ms': 49.1}
+11:34:13 INFO    aether.api [2416f373312d4e03] request method=POST ms=57.04 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:13 INFO    aether.events [1e7706fb61bf4800] routing.decision event=routing.decision event_payload={'prediction_id': 'fe06df27c1a44e289ce202f0dd60b525', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.087361, 'drift': 'none'}
+11:34:13 INFO    aether.events [1e7706fb61bf4800] prediction.completed event=prediction.completed event_payload={'prediction_id': 'fe06df27c1a44e289ce202f0dd60b525', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.087361, 'latency_ms': 12.78}
+11:34:13 INFO    aether.api [1e7706fb61bf4800] request method=POST ms=20.29 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [4c5651458927412a] routing.decision event=routing.decision event_payload={'prediction_id': '7665f969589d4ebf84d663465bad3c21', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.037189, 'drift': 'none'}
+11:34:14 INFO    aether.events [4c5651458927412a] prediction.completed event=prediction.completed event_payload={'prediction_id': '7665f969589d4ebf84d663465bad3c21', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.037189, 'latency_ms': 55.89}
+11:34:14 INFO    aether.api [4c5651458927412a] request method=POST ms=63.11 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [7f8b29de7e3849f8] routing.decision event=routing.decision event_payload={'prediction_id': '42fd7e89378848a9b5080d171b088eb9', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.317267, 'drift': 'none'}
+11:34:14 INFO    aether.events [7f8b29de7e3849f8] prediction.completed event=prediction.completed event_payload={'prediction_id': '42fd7e89378848a9b5080d171b088eb9', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.317267, 'latency_ms': 57.4}
+11:34:14 INFO    aether.api [7f8b29de7e3849f8] request method=POST ms=66.92 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [ec211017d25d4f2c] routing.decision event=routing.decision event_payload={'prediction_id': '13f22d16eb1f4d29a6278be438a93561', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.154548, 'drift': 'none'}
+11:34:14 INFO    aether.events [ec211017d25d4f2c] prediction.completed event=prediction.completed event_payload={'prediction_id': '13f22d16eb1f4d29a6278be438a93561', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.154548, 'latency_ms': 48.06}
+11:34:14 INFO    aether.api [ec211017d25d4f2c] request method=POST ms=54.45 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [a4f3973a3b2f4cac] routing.decision event=routing.decision event_payload={'prediction_id': '9fca442d3d7340b58d6d4eb99c4cda28', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.060165, 'drift': 'none'}
+11:34:14 INFO    aether.events [a4f3973a3b2f4cac] prediction.completed event=prediction.completed event_payload={'prediction_id': '9fca442d3d7340b58d6d4eb99c4cda28', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.060165, 'latency_ms': 9.32}
+11:34:14 INFO    aether.api [a4f3973a3b2f4cac] request method=POST ms=15.97 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [6c3ab21ff7494c6e] routing.decision event=routing.decision event_payload={'prediction_id': 'b6a0146b30254b7fbeaf03db13717503', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.080282, 'drift': 'none'}
+11:34:14 INFO    aether.events [6c3ab21ff7494c6e] prediction.completed event=prediction.completed event_payload={'prediction_id': 'b6a0146b30254b7fbeaf03db13717503', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.080282, 'latency_ms': 54.23}
+11:34:14 INFO    aether.api [6c3ab21ff7494c6e] request method=POST ms=62.87 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [ec4952cfe4d64895] routing.decision event=routing.decision event_payload={'prediction_id': 'dded77bc6af942caa251909f8364488d', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.149527, 'drift': 'none'}
+11:34:14 INFO    aether.events [ec4952cfe4d64895] prediction.completed event=prediction.completed event_payload={'prediction_id': 'dded77bc6af942caa251909f8364488d', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.149527, 'latency_ms': 53.56}
+11:34:14 INFO    aether.api [ec4952cfe4d64895] request method=POST ms=61.51 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [d2b949f5f2414a42] routing.decision event=routing.decision event_payload={'prediction_id': '779adb691f9d4f2884864a62880cb1b5', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.194264, 'drift': 'none'}
+11:34:14 INFO    aether.events [d2b949f5f2414a42] prediction.completed event=prediction.completed event_payload={'prediction_id': '779adb691f9d4f2884864a62880cb1b5', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.194264, 'latency_ms': 58.73}
+11:34:14 INFO    aether.api [d2b949f5f2414a42] request method=POST ms=67.0 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [6b400a873cc747f8] routing.decision event=routing.decision event_payload={'prediction_id': '20c2b7757ad54f26b507e2a60e5b678b', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.563047, 'drift': 'none'}
+11:34:14 INFO    aether.events [6b400a873cc747f8] prediction.completed event=prediction.completed event_payload={'prediction_id': '20c2b7757ad54f26b507e2a60e5b678b', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.563047, 'latency_ms': 55.95}
+11:34:14 INFO    aether.api [6b400a873cc747f8] request method=POST ms=68.88 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [54f5434a521348b5] routing.decision event=routing.decision event_payload={'prediction_id': 'b76333d085a942b897f98cc347e799b3', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.215816, 'drift': 'none'}
+11:34:14 INFO    aether.events [54f5434a521348b5] prediction.completed event=prediction.completed event_payload={'prediction_id': 'b76333d085a942b897f98cc347e799b3', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.215816, 'latency_ms': 55.87}
+11:34:14 INFO    aether.api [54f5434a521348b5] request method=POST ms=66.41 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [03a2ee8d21bc408d] routing.decision event=routing.decision event_payload={'prediction_id': 'c9f3e50fc91849728138ebf44066fc8f', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.460909, 'drift': 'none'}
+11:34:14 INFO    aether.events [03a2ee8d21bc408d] prediction.completed event=prediction.completed event_payload={'prediction_id': 'c9f3e50fc91849728138ebf44066fc8f', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.460909, 'latency_ms': 57.31}
+11:34:14 INFO    aether.api [03a2ee8d21bc408d] request method=POST ms=68.71 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [8eeeb61c04ef4093] routing.decision event=routing.decision event_payload={'prediction_id': '8105308d6793411c9d0aaa0d26c26d25', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.005975, 'drift': 'none'}
+11:34:14 INFO    aether.events [8eeeb61c04ef4093] prediction.completed event=prediction.completed event_payload={'prediction_id': '8105308d6793411c9d0aaa0d26c26d25', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.005975, 'latency_ms': 59.19}
+11:34:14 INFO    aether.api [8eeeb61c04ef4093] request method=POST ms=68.51 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [d8ab79f7701044c7] routing.decision event=routing.decision event_payload={'prediction_id': '3f8dfaafb964496782858c3d570dcd54', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.107752, 'drift': 'none'}
+11:34:14 INFO    aether.events [d8ab79f7701044c7] prediction.completed event=prediction.completed event_payload={'prediction_id': '3f8dfaafb964496782858c3d570dcd54', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.107752, 'latency_ms': 12.94}
+11:34:14 INFO    aether.api [d8ab79f7701044c7] request method=POST ms=19.9 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [bf42c12cda9d4fff] routing.decision event=routing.decision event_payload={'prediction_id': 'ddcc92652ce34477b8992a4a6d550226', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.281073, 'drift': 'none'}
+11:34:14 INFO    aether.events [bf42c12cda9d4fff] prediction.completed event=prediction.completed event_payload={'prediction_id': 'ddcc92652ce34477b8992a4a6d550226', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.281073, 'latency_ms': 56.77}
+11:34:14 INFO    aether.api [bf42c12cda9d4fff] request method=POST ms=66.02 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [4be98f7469c64506] routing.decision event=routing.decision event_payload={'prediction_id': '19069a0cbd1b422d8c2fbd455a75accc', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.480989, 'drift': 'none'}
+11:34:14 INFO    aether.events [4be98f7469c64506] prediction.completed event=prediction.completed event_payload={'prediction_id': '19069a0cbd1b422d8c2fbd455a75accc', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.480989, 'latency_ms': 55.26}
+11:34:14 INFO    aether.api [4be98f7469c64506] request method=POST ms=65.95 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [67c76417a084430a] routing.decision event=routing.decision event_payload={'prediction_id': '30fecc289f134f6bb2e7b0a1a534b2e9', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.365848, 'drift': 'none'}
+11:34:14 INFO    aether.events [67c76417a084430a] prediction.completed event=prediction.completed event_payload={'prediction_id': '30fecc289f134f6bb2e7b0a1a534b2e9', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.365848, 'latency_ms': 54.85}
+11:34:14 INFO    aether.api [67c76417a084430a] request method=POST ms=65.41 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [766b20679f0e483e] routing.decision event=routing.decision event_payload={'prediction_id': '814ca398d81f41dba7d4c3d66ab25cb0', 'action': 'ABSTAIN', 'policy': 'cost_aware', 'risk': 0.264694, 'drift': 'none'}
+11:34:14 INFO    aether.events [766b20679f0e483e] prediction.completed event=prediction.completed event_payload={'prediction_id': '814ca398d81f41dba7d4c3d66ab25cb0', 'action': 'ABSTAIN', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.264694, 'latency_ms': 53.7}
+11:34:14 INFO    aether.api [766b20679f0e483e] request method=POST ms=65.16 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:14 INFO    aether.events [b029f35fd089431d] routing.decision event=routing.decision event_payload={'prediction_id': 'c11ac079ce6148fc93a16904c3f301ca', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.099495, 'drift': 'none'}
+11:34:14 INFO    aether.events [b029f35fd089431d] prediction.completed event=prediction.completed event_payload={'prediction_id': 'c11ac079ce6148fc93a16904c3f301ca', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.099495, 'latency_ms': 14.89}
+11:34:14 INFO    aether.api [b029f35fd089431d] request method=POST ms=22.17 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:15 INFO    aether.events [1eab3bdd165442e8] routing.decision event=routing.decision event_payload={'prediction_id': 'c7b53ff713994424a81c9a37246b8e9e', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.064305, 'drift': 'none'}
+11:34:15 INFO    aether.events [1eab3bdd165442e8] prediction.completed event=prediction.completed event_payload={'prediction_id': 'c7b53ff713994424a81c9a37246b8e9e', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.064305, 'latency_ms': 52.8}
+11:34:15 INFO    aether.api [1eab3bdd165442e8] request method=POST ms=59.49 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:15 INFO    aether.events [078c0133f4504959] routing.decision event=routing.decision event_payload={'prediction_id': '50e34d4bbcd246e39ca67216d6132895', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.210841, 'drift': 'none'}
+11:34:15 INFO    aether.events [078c0133f4504959] prediction.completed event=prediction.completed event_payload={'prediction_id': '50e34d4bbcd246e39ca67216d6132895', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.210841, 'latency_ms': 56.34}
+11:34:15 INFO    aether.api [078c0133f4504959] request method=POST ms=64.51 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:15 INFO    aether.events [e3b5153dcbb94a6f] routing.decision event=routing.decision event_payload={'prediction_id': '661e92e8a47b4999bbf0c3b2a1e8ac3f', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.053302, 'drift': 'none'}
+11:34:15 INFO    aether.events [e3b5153dcbb94a6f] prediction.completed event=prediction.completed event_payload={'prediction_id': '661e92e8a47b4999bbf0c3b2a1e8ac3f', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.053302, 'latency_ms': 12.16}
+11:34:15 INFO    aether.api [e3b5153dcbb94a6f] request method=POST ms=18.5 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:15 INFO    aether.events [b8052780fb544946] routing.decision event=routing.decision event_payload={'prediction_id': '09c1a1f43fb74440b24c5ea2e670775c', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.106736, 'drift': 'none'}
+11:34:15 INFO    aether.events [b8052780fb544946] prediction.completed event=prediction.completed event_payload={'prediction_id': '09c1a1f43fb74440b24c5ea2e670775c', 'action': 'ACCEPT', 'model_id': 'lightweight:mobilenet_v3_small@1.0.0', 'risk': 0.106736, 'latency_ms': 11.27}
+11:34:15 INFO    aether.api [b8052780fb544946] request method=POST ms=17.41 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:15 INFO    aether.events [8774f7e5dc5a40c8] routing.decision event=routing.decision event_payload={'prediction_id': '2aae0d5592c0495f9c605937745a98f1', 'action': 'ACCEPT', 'policy': 'cost_aware', 'risk': 0.090285, 'drift': 'none'}
+11:34:15 INFO    aether.events [8774f7e5dc5a40c8] prediction.completed event=prediction.completed event_payload={'prediction_id': '2aae0d5592c0495f9c605937745a98f1', 'action': 'ACCEPT', 'model_id': 'advanced:resnet50@1.0.0', 'risk': 0.090285, 'latency_ms': 54.72}
+11:34:15 INFO    aether.api [8774f7e5dc5a40c8] request method=POST ms=62.22 path=/api/v1/predict status=201
+INFO:     127.0.0.1:42430 - "POST /api/v1/predict HTTP/1.1" 201 Created
+11:34:15 INFO    aether.api [9d211726bc284ef4] request method=GET ms=3.94 path=/api/v1/routing/metrics status=200
+INFO:     127.0.0.1:42438 - "GET /api/v1/routing/metrics HTTP/1.1" 200 OK
+11:34:17 INFO    aether.api [9534668d67f3416e] request method=GET ms=12.52 path=/api/v1/drift/status status=200
+INFO:     127.0.0.1:42462 - "GET /api/v1/drift/status HTTP/1.1" 200 OK
+11:34:17 INFO    aether.api [447720d03dd34f8b] request method=GET ms=17.72 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:42470 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:34:17 INFO    aether.api [2244d2bd8cc2408a] request method=GET ms=28.01 path=/api/v1/routing/metrics status=200
+INFO:     127.0.0.1:42452 - "GET /api/v1/routing/metrics HTTP/1.1" 200 OK
+11:34:17 INFO    aether.api [f69791e2f76f45ad] request method=GET ms=30.11 path=/api/v1/metrics/summary status=200
+INFO:     127.0.0.1:42444 - "GET /api/v1/metrics/summary HTTP/1.1" 200 OK
+11:34:17 INFO    aether.api [a7c86809f4cc4743] request method=GET ms=30.3 path=/api/v1/predictions status=200
+INFO:     127.0.0.1:42468 - "GET /api/v1/predictions?limit=10 HTTP/1.1" 200 OK
+11:34:19 INFO    aether.api [d3cb8667ab85496f] request method=GET ms=3.12 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:53924 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:34:20 INFO    aether.api [13b4cf0e095d449a] request method=GET ms=37.8 path=/api/v1/reports/benchmarks status=200
+INFO:     127.0.0.1:53962 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
+11:34:20 INFO    aether.api [427b6ef6685a4495] request method=GET ms=40.39 path=/api/v1/routing/metrics status=200
+INFO:     127.0.0.1:53936 - "GET /api/v1/routing/metrics HTTP/1.1" 200 OK
+11:34:20 INFO    aether.api [05c8798845e7425a] request method=GET ms=13.9 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:53972 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:34:20 INFO    aether.api [fd6a56b3b3444a5e] request method=GET ms=42.73 path=/api/v1/routing/decisions status=200
+INFO:     127.0.0.1:53946 - "GET /api/v1/routing/decisions?limit=20 HTTP/1.1" 200 OK
+11:34:21 INFO    aether.api [b5de671e8acf4b6f] request method=GET ms=5.03 path=/api/v1/drift/status status=200
+INFO:     127.0.0.1:53986 - "GET /api/v1/drift/status HTTP/1.1" 200 OK
+11:34:21 INFO    aether.api [beb2cab7643c4b52] request method=GET ms=7.86 path=/api/v1/reports/benchmarks status=200
+INFO:     127.0.0.1:54010 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
+11:34:21 INFO    aether.api [90e52297e7734fb0] request method=GET ms=9.88 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:54012 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:34:21 INFO    aether.api [f3f372c21b404276] request method=GET ms=10.76 path=/api/v1/drift/events status=200
+INFO:     127.0.0.1:53998 - "GET /api/v1/drift/events?limit=20 HTTP/1.1" 200 OK
+11:34:22 INFO    aether.api [bf3ac9db48d84128] request method=GET ms=4.4 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:54020 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:34:22 INFO    aether.api [5d4f9015182d4a75] request method=GET ms=7.08 path=/api/v1/reviews status=200
+INFO:     127.0.0.1:54016 - "GET /api/v1/reviews?status=pending&limit=50 HTTP/1.1" 200 OK
+11:34:46 INFO    aether.api [9bc4d0206fea48ba] request method=GET ms=4.07 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:57502 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:34:46 INFO    aether.api [298acb328ac74b42] request method=GET ms=8.7 path=/api/v1/reports/benchmarks status=200
+INFO:     127.0.0.1:57496 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
+11:34:48 INFO    aether.api [345f9bf851074e1f] request method=GET ms=9.32 path=/api/v1/reports/benchmarks status=200
+INFO:     127.0.0.1:54808 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
+11:34:48 INFO    aether.api [b1114573d86747cd] request method=GET ms=11.97 path=/api/v1/experiments status=200
+INFO:     127.0.0.1:54806 - "GET /api/v1/experiments?limit=50 HTTP/1.1" 200 OK
+11:34:48 INFO    aether.api [7d4f219603864f67] request method=GET ms=12.13 path=/api/v1/reports/training_lightweight status=200
+INFO:     127.0.0.1:54824 - "GET /api/v1/reports/training_lightweight HTTP/1.1" 200 OK
+11:34:48 INFO    aether.api [8d015f959d7249cf] request method=GET ms=13.8 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:54830 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:34:49 INFO    aether.api [06980bf886ff4750] request method=GET ms=6.74 path=/api/v1/predictions status=200
+INFO:     127.0.0.1:54840 - "GET /api/v1/predictions?limit=30 HTTP/1.1" 200 OK
+11:34:49 INFO    aether.api [7bf63ed4f4404b3c] request method=GET ms=6.62 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:54856 - "GET /api/v1/system/status HTTP/1.1" 200 OK
+11:35:19 INFO    aether.api [c10b94de41c54e75] request method=GET ms=5.36 path=/api/v1/reports/benchmarks status=200
+INFO:     127.0.0.1:39816 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
+11:35:37 INFO    aether.api [0534ddc869004d6f] request method=GET ms=4.34 path=/api/v1/reports/benchmarks status=200
+INFO:     127.0.0.1:39710 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
+11:37:23 INFO    aether.api [629e4cf2460c4ff3] request method=GET ms=4.34 path=/api/v1/reports/benchmarks status=200
+INFO:     127.0.0.1:40252 - "GET /api/v1/reports/benchmarks HTTP/1.1" 200 OK
+11:37:23 INFO    aether.api [7b77670b9e844b0d] request method=GET ms=5.93 path=/api/v1/system/status status=200
+INFO:     127.0.0.1:40260 - "GET /api/v1/system/status HTTP/1.1" 200 OK

@@ -4,7 +4,7 @@ PY ?= python3
 PIP ?= $(PY) -m pip
 export AETHER_CONFIG ?= configs/aether.yaml
 
-.PHONY: help install data train calibrate reference benchmarks test lint format typecheck api frontend migrate docker-build docker-up docker-down clean
+.PHONY: help install data train calibrate reference benchmarks figures test lint format typecheck api frontend migrate docker-build docker-up docker-down clean
 
 help:
 	@echo "AETHER-ML targets:"
@@ -14,6 +14,7 @@ help:
 	@echo "  make calibrate    fit temperatures and the learned risk models"
 	@echo "  make reference    freeze the drift reference window"
 	@echo "  make benchmarks   run the full reliability study"
+	@echo "  make figures      render the README figures from recorded results"
 	@echo "  make test         run the test suite"
 	@echo "  make lint         ruff check"
 	@echo "  make format       ruff format"
@@ -41,6 +42,9 @@ reference:
 
 benchmarks:
 	$(PY) experiments/run_benchmarks.py --config $(AETHER_CONFIG)
+
+figures:
+	$(PY) experiments/make_figures.py
 
 test:
 	$(PY) -m pytest
