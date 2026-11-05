@@ -148,6 +148,9 @@ export interface MetricsSummary {
   review_backlog: number;
   drift_events_24h: number;
   predictions_total: number;
+  budgeted_total: number;
+  budget_misses: number;
+  budget_miss_rate: number;
 }
 
 export interface ReviewCase {

@@ -341,11 +341,13 @@ The correct response is the drift path, not a tighter number on this table.
 | gaussian noise, severity 3 | 0.6350 | 0.6450 | +0.0100 | 2.40 ms |
 
 TTA averages identity and horizontal-flip logits on the escalated tier. It buys +0.0100 accuracy
-clean and +0.0100 under corruption for one extra advanced forward pass, and because the mirror is
-paid only when the drift monitor flags the window — 0% of
-clean windows versus 100% of severity-3 noisy windows
-using the detector's measured rates — clean traffic keeps single-pass latency. `routing.tta: true`
-turns it on; `routing.tta_on_drift: false` makes every escalated request pay for it.
+clean and +0.0100 under corruption, and the extra mirror pass costs **2.43 ms per image** warm on
+the reference CPU (2.40 ms on the noisy stream) — a second full advanced forward pass on top of
+the decision that escalated. Because the mirror is paid only when the drift monitor flags the
+window — 0% of clean windows and 100% of severity-3 noisy windows using the detector's measured
+rates — clean traffic keeps single-pass latency, while a flagged request pays the measured 2.4 ms
+once. `routing.tta: true` turns it on; `routing.tta_on_drift: false` makes every escalated request
+pay for it.
 
 <img src="docs/assets/dashboard-tta.png" alt="Routing intelligence showing budget-miss and mirror-pass tiles and decisions tagged mirror TTA" width="100%" />
 

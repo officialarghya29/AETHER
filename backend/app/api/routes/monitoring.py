@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Query
 from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 
 from aether.monitoring.metrics import METRICS
 from backend.app.api.dependencies import PipelineDep, SessionDep
@@ -23,6 +24,23 @@ from backend.app.database.models import (
 )
 
 router = APIRouter(tags=["monitoring"])
+
+
+def _budget_and_tta_counts(session: Session) -> tuple[int, int, int]:
+    """Budgeted traffic, budget misses and paid mirror passes across stored decisions."""
+    budgeted = 0
+    misses = 0
+    tta_calls = 0
+    for decision in session.scalars(select(PredictionModel.decision)):
+        if not decision:
+            continue
+        budget = decision.get("risk_budget")
+        if budget:
+            budgeted += 1
+            misses += 0 if budget.get("meets_threshold") else 1
+        if decision.get("test_time_augmentation"):
+            tta_calls += 1
+    return budgeted, misses, tta_calls
 
 
 @router.get("/drift/status", response_model=DriftStatusResponse)
@@ -127,18 +145,7 @@ def routing_metrics(session: SessionDep) -> RoutingMetrics:
     }
     mean_risk = float(session.scalar(select(func.avg(RoutingDecisionModel.risk))) or 0.0)
     mean_latency = float(session.scalar(select(func.avg(PredictionModel.latency_ms))) or 0.0)
-    budgeted = 0
-    misses = 0
-    tta_calls = 0
-    for decision in session.scalars(select(PredictionModel.decision)):
-        if not decision:
-            continue
-        budget = decision.get("risk_budget")
-        if budget:
-            budgeted += 1
-            misses += 0 if budget.get("meets_threshold") else 1
-        if decision.get("test_time_augmentation"):
-            tta_calls += 1
+    budgeted, misses, tta_calls = _budget_and_tta_counts(session)
     return RoutingMetrics(
         total=total,
         action_distribution=distribution,
@@ -176,6 +183,7 @@ def metrics_summary(session: SessionDep) -> MetricsSummary:
         or 0
     )
     predictions_total = int(session.scalar(select(func.count()).select_from(PredictionModel)) or 0)
+    budgeted, misses, _ = _budget_and_tta_counts(session)
     return MetricsSummary(
         uptime_seconds=snapshot["uptime_seconds"],
         counters=snapshot["counters"],
@@ -184,4 +192,7 @@ def metrics_summary(session: SessionDep) -> MetricsSummary:
         review_backlog=backlog,
         drift_events_24h=drift_events,
         predictions_total=predictions_total,
+        budgeted_total=budgeted,
+        budget_misses=misses,
+        budget_miss_rate=round(misses / budgeted, 4) if budgeted else 0.0,
     )

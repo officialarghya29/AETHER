@@ -46,6 +46,12 @@ project adheres to semantic versioning.
 - **Ordering, budget and mirror-pass tiles**: routing intelligence reports budget misses
   among budgeted traffic and how many decisions paid for a mirror pass, so the audit tag is
   visible at a glance.
+- **Budget-miss rate in the operational summary**: `/api/v1/metrics/summary` reports budgeted
+  traffic, misses and the miss rate, so the figure can be alarmed on alongside latency and backlog.
+- **CI job summary for the documentation guard**: the snapshot check lists every verified figure in
+  the workflow run summary instead of only a pass/fail line.
+- **Measured mirror-pass cost**: the README states the per-image TTA cost and that flagged traffic
+  pays it once, with the gating rates recorded in the stability snapshot.
 - **Documentation drift guard**: CI compares README stability numbers against
   `docs/data/stability-snapshot.json`, written by `make stability`, and fails on mismatch.
 

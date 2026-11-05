@@ -152,12 +152,19 @@
     "clean": {
       "identity": 0.9335,
       "tta": 0.9435,
-      "delta": 0.01
+      "delta": 0.01,
+      "mirror_pass_ms": 2.429
     },
     "corrupted_gaussian_noise_severity_3": {
       "identity": 0.635,
       "tta": 0.645,
-      "delta": 0.01
+      "delta": 0.01,
+      "mirror_pass_ms": 2.4
+    },
+    "drift_gating": {
+      "available": true,
+      "clean_extra_pass_rate": 0.0,
+      "corrupted_extra_pass_rate": 1.0
     }
   }
 }

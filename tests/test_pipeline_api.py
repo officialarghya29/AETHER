@@ -197,6 +197,9 @@ def test_metrics_summary_counts_predictions(client):
     payload = response.json()
     assert payload["predictions_total"] >= 1
     assert payload["review_backlog"] >= 1
+    assert payload["budgeted_total"] == 0
+    assert payload["budget_misses"] == 0
+    assert payload["budget_miss_rate"] == 0.0
 
 
 def test_routing_metrics_count_budgets_and_tta(client, api_config):
@@ -215,6 +218,10 @@ def test_routing_metrics_count_budgets_and_tta(client, api_config):
     assert payload["budget_misses"] == 1
     assert payload["budget_miss_rate"] == pytest.approx(1.0)
     assert payload["tta_calls"] == 0
+    summary = client.get("/api/v1/metrics/summary").json()
+    assert summary["budgeted_total"] == 1
+    assert summary["budget_misses"] == 1
+    assert summary["budget_miss_rate"] == pytest.approx(1.0)
 
 
 def test_routing_endpoints(client):

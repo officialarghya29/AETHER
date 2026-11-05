@@ -201,6 +201,9 @@ class MetricsSummary(BaseModel):
     review_backlog: int
     drift_events_24h: int
     predictions_total: int
+    budgeted_total: int = 0
+    budget_misses: int = 0
+    budget_miss_rate: float = 0.0
 
 
 class Pagination(BaseModel):

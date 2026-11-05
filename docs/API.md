@@ -85,7 +85,7 @@ curl -s -X POST localhost:8000/api/v1/predict \
 | GET | `/drift/events` | Recorded moderate/severe events |
 | GET | `/routing/decisions` | Recent decisions with explanations |
 | GET | `/routing/metrics` | Action distribution, escalation rate, latency |
-| GET | `/metrics/summary` | Counters, backlog, service gauges |
+| GET | `/metrics/summary` | Counters, backlog, service gauges, budget-miss rate |
 
 Drift endpoints never report accuracy impact: labels are not available at inference time.
 

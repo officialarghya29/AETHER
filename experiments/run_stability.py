@@ -306,6 +306,24 @@ def main() -> None:
     print(f"calibrated budgets: {sorted(payload['tiers'])}")
 
 
+def _snapshot_tta(tta: dict[str, Any]) -> dict[str, Any]:
+    """Keep the published accuracy, cost and gating figures in one recorded place."""
+    if not tta.get("available"):
+        return {}
+    snapshot: dict[str, Any] = {
+        name: {
+            "identity": tta[name]["identity_accuracy"],
+            "tta": tta[name]["tta_accuracy"],
+            "delta": tta[name]["delta"],
+            "mirror_pass_ms": tta[name]["mirror_pass_ms_per_image"],
+        }
+        for name in ("clean", "corrupted_gaussian_noise_severity_3")
+    }
+    if tta.get("drift_gating", {}).get("available"):
+        snapshot["drift_gating"] = tta["drift_gating"]
+    return snapshot
+
+
 def write_snapshot(report: dict[str, Any]) -> None:
     """Record the headline numbers so CI can fail when the README drifts from them."""
     payload: dict[str, Any] = {
@@ -338,15 +356,7 @@ def write_snapshot(report: dict[str, Any]) -> None:
             }
             for entry in report["severity_sweep"]
         ],
-        "tta": {
-            name: {
-                "identity": report["tta"][name]["identity_accuracy"],
-                "tta": report["tta"][name]["tta_accuracy"],
-                "delta": report["tta"][name]["delta"],
-            }
-            for name in ("clean", "corrupted_gaussian_noise_severity_3")
-            if report["tta"].get("available")
-        },
+        "tta": _snapshot_tta(report["tta"]),
     }
     SNAPSHOT.parent.mkdir(parents=True, exist_ok=True)
     SNAPSHOT.write_text(json.dumps(payload, indent=2))
