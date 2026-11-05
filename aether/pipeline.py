@@ -136,6 +136,10 @@ class ReliabilityPipeline:
         self._risk_advanced = self._load_risk_model("advanced")
         self._risk_precall = self._load_risk_model("advanced_precall")
         self._advanced_latency_ms = config.routing.advanced_latency_estimate_ms
+        # Checkpoint presence is a filesystem stat; cache it instead of paying for it per batch.
+        self._advanced_present = bool(config.routing.enable_escalation) and config.resolve(
+            config.models.advanced.checkpoint
+        ).exists()
         # The first call to each model includes lazy weight loading and thread-pool warm-up. Those
         # samples are not steady-state latency, so they must not set the budget estimate: a single
         # cold start would otherwise make every later escalation look unaffordable.
@@ -243,23 +247,33 @@ class ReliabilityPipeline:
             _uncertainty(p.probabilities, self.config.uncertainty.epsilon)
             for p in light_predictions
         ]
-        drifts = self._evaluate_drift(light_predictions, calibrated, qualities, images)
+        drifts = self._evaluate_drift(
+            light_predictions, calibrated, qualities, images, uncertainties=uncertainties
+        )
+        # Both first-call heads consume the same feature vector; building it once halves the
+        # feature cost of the router without changing either estimate.
+        risk_features = [
+            features_from_evidence(
+                entropy=uncertainty["predictive_entropy"],
+                max_probability=uncertainty["max_probability"],
+                margin=uncertainty["prediction_margin"],
+                drift_score=drift.score,
+                severity=drift.severity,
+                disagreement=None,
+            )
+            for uncertainty, drift in zip(uncertainties, drifts, strict=True)
+        ]
         risks = [
-            self._risk_for("lightweight", u, d)[0]
-            for u, d in zip(uncertainties, drifts, strict=True)
+            self._risk_from_features("lightweight", features)[0] for features in risk_features
         ]
         # Estimate the advanced model's risk from lightweight evidence only (a dedicated pre-call
         # head). Without this estimate a cost-aware policy could never justify a second call, and
         # using the post-call head here would price escalation with information the caller has not
         # paid for.
         advanced_risk_estimates = [
-            self._risk_for("advanced_precall", uncertainty, drift)[0]
-            for uncertainty, drift in zip(uncertainties, drifts, strict=True)
+            self._risk_from_features("advanced_precall", features)[0] for features in risk_features
         ]
-        advanced_present = (
-            self.config.routing.enable_escalation
-            and self.config.resolve(self.config.models.advanced.checkpoint).exists()
-        )
+        advanced_present = self._advanced_present
         elapsed_light = light_ms / max(1, len(light_predictions))
         if self._light_warm:
             self._light_latency_ms = elapsed_light
@@ -341,6 +355,8 @@ class ReliabilityPipeline:
         probabilities: list[np.ndarray],
         qualities: list[ImageQuality],
         images: np.ndarray,
+        *,
+        uncertainties: list[dict[str, float]] | None = None,
     ) -> list[DriftReport]:
         """Append observations to the window and periodically evaluate shift evidence."""
         monitor = None
@@ -349,13 +365,23 @@ class ReliabilityPipeline:
                 monitor = self.drift_monitor()
             except Exception:
                 monitor = None
+        # One vectorised reduction over the batch instead of a Python loop over pixels per image.
+        channel_means = (
+            images.reshape(images.shape[0], -1, images.shape[-1]).mean(axis=1) / 255.0
+        )
         for index, (prediction, probs, quality) in enumerate(
             zip(predictions, probabilities, qualities, strict=True)
         ):
             if prediction.embedding is None:
                 continue
-            # Channel means are taken per image on the same 0-1 scale as the reference window.
-            channel_means = images[index].reshape(-1, 3).mean(axis=0) / 255.0
+            # Entropy and max-probability were already computed for calibration; recomputing them
+            # here doubled the uncertainty cost of every request.
+            if uncertainties is not None:
+                entropy = uncertainties[index]["predictive_entropy"]
+                confidence = uncertainties[index]["max_probability"]
+            else:
+                entropy = float(predictive_entropy(probs))
+                confidence = float(max_probability(probs))
             self.window.add(
                 DriftObservation(
                     input_stats=np.array(
@@ -363,15 +389,15 @@ class ReliabilityPipeline:
                             quality.brightness,
                             quality.contrast,
                             quality.sharpness,
-                            float(channel_means[0]),
-                            float(channel_means[1]),
-                            float(channel_means[2]),
+                            float(channel_means[index][0]),
+                            float(channel_means[index][1]),
+                            float(channel_means[index][2]),
                         ],
                         dtype=np.float64,
                     ),
                     embedding=prediction.embedding.astype(np.float64),
-                    entropy=float(predictive_entropy(probs)),
-                    max_probability=float(max_probability(probs)),
+                    entropy=entropy,
+                    max_probability=confidence,
                     predicted_class=prediction.class_index,
                 )
             )
@@ -412,6 +438,12 @@ class ReliabilityPipeline:
             severity=drift.severity,
             disagreement=disagreement,
         )
+        return self._risk_from_features(role, evidence)
+
+    def _risk_from_features(
+        self, role: str, evidence: dict[str, float]
+    ) -> tuple[float, str]:
+        """Score a pre-built feature vector with the requested head."""
         model = {
             "lightweight": self._risk_light,
             "advanced": self._risk_advanced,

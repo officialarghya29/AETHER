@@ -10,6 +10,7 @@ correctness, and the artifact records exactly which split and dataset fingerprin
 
 from __future__ import annotations
 
+import threading
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -115,14 +116,35 @@ def apply_temperature(logits: np.ndarray, temperature: float) -> np.ndarray:
 
 
 class CalibrationStore:
-    """JSON-backed store of fitted temperatures keyed by model id."""
+    """JSON-backed store of fitted temperatures keyed by model id.
+
+    The artifact is read once and cached against the file's modification time and size. Serving
+    previously re-read and re-parsed the JSON on every prediction, which put a filesystem round
+    trip on the inference hot path for a value that changes at most once per calibration run.
+    """
 
     def __init__(self, path: Path) -> None:
         self.path = path
+        self._lock = threading.Lock()
+        self._cache: dict[str, dict] = {}
+        self._stamp: tuple[int, int] | None = None
 
     def load(self) -> dict[str, dict]:
-        payload = read_json(self.path, default={}) or {}
-        return payload.get("calibrations", payload)
+        try:
+            stat = self.path.stat()
+        except OSError:
+            stat = None
+        stamp = (stat.st_mtime_ns, stat.st_size) if stat is not None else None
+        with self._lock:
+            if stamp is not None and stamp == self._stamp:
+                return self._cache
+            payload = read_json(self.path, default={}) or {}
+            calibrations = payload.get("calibrations", payload)
+            if not isinstance(calibrations, dict):
+                calibrations = {}
+            self._cache = calibrations
+            self._stamp = stamp
+            return calibrations
 
     def get(self, model_id: str) -> TemperatureCalibration | None:
         record = self.load().get(model_id)

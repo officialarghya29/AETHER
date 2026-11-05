@@ -15,6 +15,11 @@ project adheres to semantic versioning.
 
 ### Fixed
 
+- **Efficiency pass.** The calibration artifact was re-read and re-parsed on every prediction;
+  it is now cached by modification time and size. The risk feature vector is built once and shared
+  by both first-call heads, drift bookkeeping reuses the calibrated uncertainty, channel means are
+  vectorised over the batch, and checkpoint presence is cached instead of stat-ed per batch.
+
 - **Escalation was priced with stale risk.** After a completed second call, the cost-aware policy
   still scored ACCEPT with the first-call risk, so it paid for escalation and then abstained. ACCEPT
   and HUMAN_REVIEW are now priced with the measured advanced risk.
@@ -25,6 +30,9 @@ project adheres to semantic versioning.
   completed before paint; the chart is now drawn without animation.
 
 ### Added
+
+- **Efficiency study** (`make efficiency`): component, batch, feature, persistence and memory
+  scopes, reported in `artifacts/reports/EFFICIENCY.md` and summarised in the README.
 
 - **Reliability pipeline.** One orchestration path (`aether.pipeline.ReliabilityPipeline`) shared by
   the HTTP API, the CLI and the benchmark suite, so served and measured behaviour are identical.

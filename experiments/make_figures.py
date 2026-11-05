@@ -541,6 +541,57 @@ def architecture() -> None:
     _save(fig, "architecture.png")
 
 
+def efficiency(report: dict) -> None:
+    rows = report["batch_scaling"]
+    sizes = [row["batch_size"] for row in rows]
+    ms = [row["ms_per_image"] for row in rows]
+    scopes = report["scopes"]
+
+    fig, axes = plt.subplots(1, 2, figsize=(9.4, 3.9))
+    ax = axes[0]
+    ax.plot(sizes, ms, color=CYAN, lw=5, alpha=0.12)
+    ax.plot(sizes, ms, color=CYAN, lw=2.2, marker="o", ms=5)
+    for size, value in zip(sizes, ms, strict=True):
+        ax.annotate(f"{value:.2f}", (size, value), textcoords="offset points", xytext=(0, 9),
+                    ha="center", color=MUTED, fontsize=7)
+    ax.set_xscale("log", base=2)
+    ax.set_xticks(sizes, [str(size) for size in sizes])
+    ax.set_xlabel("batch size")
+    ax.set_ylabel("ms per image")
+    ax.set_title("Batching amortises the fixed cost", loc="left")
+    _clean_axes(ax)
+
+    ax = axes[1]
+    labels = ["baseline", "no drift bookkeeping", "heuristic heads"]
+    values = [
+        scopes["baseline_ms_per_image"],
+        scopes["without_drift_ms_per_image"],
+        scopes["heuristic_risk_ms_per_image"],
+    ]
+    colours = [LIME, CYAN, VIOLET]
+    ax.barh(list(range(len(labels))), values, color=colours, alpha=0.85, height=0.6)
+    for index, value in enumerate(values):
+        ax.text(value + max(values) * 0.015, index, f"{value:.2f} ms", va="center",
+                color=TEXT, fontsize=8)
+    ax.set_yticks(list(range(len(labels))), labels)
+    ax.set_xlim(0, max(values) * 1.22)
+    ax.set_xlabel("ms per image, end to end (light tier)")
+    escalation = scopes.get("escalation_ms_per_escalated_image")
+    subtitle = (
+        f"escalation adds {escalation:.2f} ms, paid only when the router escalates"
+        if escalation is not None
+        else "what each capability costs"
+    )
+    ax.set_title(subtitle, loc="left", fontsize=10, color=MUTED, fontweight="normal")
+    _clean_axes(ax)
+    ax.grid(axis="y", visible=False)
+    fig.suptitle("Efficiency audit — CPU, warmed, repeated runs", x=0.012, ha="left",
+                 color=TEXT, fontsize=13, fontweight="bold")
+    fig.tight_layout(rect=(0, 0.02, 1, 0.90))
+    _watermark(fig)
+    _save(fig, "efficiency.png")
+
+
 def main() -> None:
     bench = load("benchmarks.json")
     calib = json.loads((CALIB / "learned_policy.json").read_text())
@@ -556,6 +607,9 @@ def main() -> None:
     pareto(bench)
     risk_heads(calib)
     architecture()
+    efficiency_path = REPORTS / "efficiency.json"
+    if efficiency_path.exists():
+        efficiency(json.loads(efficiency_path.read_text()))
 
 
 if __name__ == "__main__":

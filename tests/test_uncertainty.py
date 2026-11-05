@@ -129,3 +129,49 @@ def test_metrics_handle_empty_input_gracefully():
     empty = np.zeros((0, 3))
     assert np.isnan(expected_calibration_error(empty, np.array([], dtype=int), 5))
     assert np.isnan(accuracy(np.array([]), np.array([])))
+
+
+def test_calibration_store_reads_the_artifact_once_per_version(tmp_path, monkeypatch):
+    """Serving must not re-read the calibration JSON once per prediction."""
+    import json as _json
+
+    import aether.uncertainty.calibration as calibration_module
+    from aether.uncertainty.calibration import CalibrationStore
+
+    path = tmp_path / "temperatures.json"
+    record = {
+        "model_id": "lightweight:test@1.0.0",
+        "temperature": 0.75,
+        "split": "calibration",
+        "samples": 10,
+        "nll_before": 1.0,
+        "nll_after": 0.9,
+        "ece_before": 0.1,
+        "ece_after": 0.05,
+        "fitted_at": "2026-01-01T00:00:00Z",
+    }
+    path.write_text(_json.dumps({"calibrations": {"lightweight:test@1.0.0": record}}))
+
+    calls = {"count": 0}
+    real_read = calibration_module.read_json
+
+    def counting_read(*args, **kwargs):
+        calls["count"] += 1
+        return real_read(*args, **kwargs)
+
+    monkeypatch.setattr(calibration_module, "read_json", counting_read)
+    store = CalibrationStore(path)
+
+    assert store.temperature("lightweight:test@1.0.0") == pytest.approx(0.75)
+    assert store.temperature("lightweight:test@1.0.0") == pytest.approx(0.75)
+    assert calls["count"] == 1, "repeated lookups must hit the cache"
+
+    # A new artifact version is picked up without restarting the process.
+    record["temperature"] = 1.5
+    path.write_text(_json.dumps({"calibrations": {"lightweight:test@1.0.0": record}}))
+    future = path.stat().st_mtime_ns + 1_000_000
+    import os as _os
+
+    _os.utime(path, ns=(future, future))
+    assert store.temperature("lightweight:test@1.0.0") == pytest.approx(1.5)
+    assert calls["count"] == 2

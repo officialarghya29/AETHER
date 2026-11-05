@@ -3,7 +3,7 @@
 <p align="center">
   <img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-a855f7?style=flat-square" />
   <img alt="python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-22d3ee?style=flat-square" />
-  <img alt="tests 98 passing" src="https://img.shields.io/badge/tests-98%20passing-a3e635?style=flat-square" />
+  <img alt="tests 98 passing" src="https://img.shields.io/badge/tests-%20passing-a3e635?style=flat-square" />
   <img alt="mypy clean" src="https://img.shields.io/badge/mypy-52%20modules%20clean-22d3ee?style=flat-square" />
   <img alt="torch 2.13 cpu" src="https://img.shields.io/badge/torch-2.13%20%C2%B7%20cpu-fbbf24?style=flat-square" />
 </p>
@@ -189,21 +189,18 @@ and automobile ↔ truck.
 
 ## the theory
 
-<details open>
-<summary><b>1 · temperature scaling</b></summary>
+### 1 · temperature scaling
 
 $$
 p_i = \operatorname{softmax}\!\left(\frac{z_i}{T}\right), \qquad
-T^\* = \arg\min_T \; -\sum_{n=1}^{N} \log p_{y_n}(x_n; T)
+T^{\star} = \arg\min_T \; -\sum_{n=1}^{N} \log p_{y_n}(x_n; T)
 $$
 
 Fitted on the calibration split only. `T > 1` softens an overconfident model; `T < 1` sharpens an
 underconfident one. Both tiers here land below 1 (`0.75`, `0.71`) — they were *under*confident at
 64 px.
-</details>
 
-<details>
-<summary><b>2 · uncertainty features</b></summary>
+### 2 · uncertainty features
 
 $$
 H(p) = -\sum_k p_k \log p_k, \qquad
@@ -214,10 +211,8 @@ $$
 
 Entropy is the base signal, normalised entropy makes it comparable across label spaces, MSP and
 margin capture the geometry near the decision boundary.
-</details>
 
-<details>
-<summary><b>3 · calibration error</b></summary>
+### 3 · calibration error
 
 $$
 \mathrm{ECE} = \sum_{b=1}^{B} \frac{|B_b|}{N}\,\bigl|\,\mathrm{acc}(B_b) - \mathrm{conf}(B_b)\,\bigr|
@@ -225,10 +220,8 @@ $$
 
 15 equal-width confidence bins. ECE is reported, never optimised directly — optimising ECE is how
 you get a well-calibrated model that is still wrong in the same places.
-</details>
 
-<details>
-<summary><b>4 · selective risk</b></summary>
+### 4 · selective risk
 
 Rank by confidence, accept the top `c` fraction:
 
@@ -240,10 +233,8 @@ $$
 
 Lower AURC means the model knows what it does not know. This is the metric that matters for
 abstention-based systems, and it is reported for both tiers.
-</details>
 
-<details>
-<summary><b>5 · drift composite</b></summary>
+### 5 · drift composite
 
 $$
 S = \max\Bigl(\;\mathrm{PSI}_{\text{input}},\;
@@ -258,10 +249,8 @@ The KS statistics are Bonferroni-corrected across the PCA components actually te
 component cannot fake a drift alert. Bands: `none < 1.5 ≤ low < 3.0 ≤ moderate < 6.0 ≤ severe`.
 A clean window scores 0.22 on average here; a severity-3 corruption crosses the moderate band every
 time.
-</details>
 
-<details>
-<summary><b>6 · risk model</b></summary>
+### 6 · risk model
 
 $$
 P(\text{wrong} \mid x) = \sigma\!\left(w^\top \phi(x) + b\right),
@@ -273,10 +262,8 @@ Fitted with L2-regularised logistic regression on the calibration split. The fir
 heads exclude disagreement — it does not exist before a second model runs, and including it would
 leak the escalation's own outcome. Drift score is excluded everywhere: development data has only two
 drift levels, so its coefficient is not identified.
-</details>
 
-<details>
-<summary><b>7 · routing utility</b></summary>
+### 7 · routing utility
 
 $$
 \begin{aligned}
@@ -292,16 +279,81 @@ the model is missing, or the latency budget cannot absorb the measured latency. 
 is a failure, not a slow success. After the second call has actually run, ACCEPT and HUMAN_REVIEW are
 priced with the **measured** advanced risk — otherwise the router pays for an answer and then
 declines to use it.
-</details>
 
-<details>
-<summary><b>8 · the honest bit</b></summary>
+### 8 · the honest bit
 
 A pre-call estimate of the strong model's error is not free information: AUC 0.72 is a real signal but
 a weak one. Occasionally AETHER pays for escalation and then still abstains, because the strong model
 turned out to be less certain than the estimate implied. That is visible in the cost column, and it is
 the correct behaviour — the alternative is to force an answer the evidence does not support.
-</details>
+
+## efficiency — what it costs
+
+Measured by `make efficiency` on the same CPU that produced every other number here, warmed, with
+medians across interleaved rounds. Raw data: [`artifacts/reports/EFFICIENCY.md`](artifacts/reports/EFFICIENCY.md).
+
+<img src="docs/assets/efficiency.png" alt="Throughput versus batch size and per-capability cost" width="100%" />
+
+### steady state, per image
+
+| stage | cost |
+| --- | --- |
+| image quality analysis | 0.151 ms |
+| preprocess (resize / normalise) | 0.071 ms |
+| lightweight inference | 0.611 ms |
+| calibrate + uncertainty | 0.032 ms |
+| temperature lookup (cached) | 0.009 ms |
+| risk features | 0.0006 ms |
+| two risk heads | 0.008 ms |
+| drift bookkeeping | 0.0002 ms |
+| routing decision | 0.020 ms |
+| **end to end (light tier)** | **0.76 ms** |
+
+Inference is 80 % of the budget. Everything AETHER adds — calibration, drift, two risk heads,
+utility routing, explanation — is under 0.15 ms, roughly one fifth of a single forward pass.
+
+### batching
+
+| batch | ms / image | images / s |
+| --- | --- | --- |
+| 1 | 4.17 | 240 |
+| 8 | 3.35 | 299 |
+| 16 | 1.72 | 580 |
+| 32 | 1.25 | 803 |
+| 64 | 1.39 | 718 |
+
+Throughput rises 3.3× from batch 1 to 32 and then flattens — the fixed per-request cost is amortised,
+and beyond 32 the CPU kernels are saturated. Batch 1 is the honest interactive number.
+
+### what each capability costs
+
+| capability | marginal cost | when it is paid |
+| --- | --- | --- |
+| drift bookkeeping | +0.054 ms/image | every request |
+| learned heads vs heuristic | +0.059 ms/image | every request |
+| composite drift evaluation | 197 ms per 200-image window → **+0.99 ms/image amortised** | once per window |
+| escalation (ResNet50) | **+2.78 ms** | only escalated images |
+| durable write (3 rows) | 9.8 ms/prediction | every persisted request |
+
+The composite score is the expensive optional feature — permutation MMD plus 32 KS tests — which is
+exactly why it runs per window instead of per request. The durable write is now the dominant cost at
+these latencies, which is why the API writes a batch in one transaction.
+
+### memory
+
+RSS grew **0.2 MB across 320 predictions**; the drift window is bounded at 200 observations and held
+exactly 200 after 320 predictions. Memory is flat by construction, not by luck.
+
+### what this pass fixed
+
+| issue | fix | evidence |
+| --- | --- | --- |
+| calibration JSON re-read and re-parsed on **every prediction** (0.057 ms median per call) | cached by artifact mtime + size | regression test counts reads: once per version |
+| risk feature vector built twice per image (light + pre-call heads) | built once, scored by both heads | identical AUCs on the calibration artifact |
+| drift bookkeeping recomputed entropy and max-probability | reuses the calibrated values | same window contents, less work |
+| per-image channel-mean loop in the hot path | one vectorised reduction per batch | batch behaviour unchanged |
+| advanced-checkpoint `exists()` stat on every batch | cached at construction | one stat per process |
+
 
 ## the console
 
@@ -331,7 +383,7 @@ database, never hardcoded.
 | serving | FastAPI, SQLAlchemy 2, Alembic, SQLite / PostgreSQL |
 | dashboard | React 18, TypeScript, Vite, recharts, Tailwind |
 | ops | Docker Compose, nginx, GitHub Actions |
-| quality | pytest (98 passing), ruff clean, mypy clean over `aether/` (52 modules) |
+| quality | pytest ( passing), ruff clean, mypy clean over `aether/` (52 modules) |
 
 ## quickstart
 
@@ -345,6 +397,7 @@ make train       # fine-tune both tiers        ~60 min CPU
 make calibrate   # temperatures + the three risk heads
 make reference   # freeze the drift reference window
 make benchmarks  # full reliability study
+make efficiency  # latency, throughput and per-capability cost
 make figures     # render every chart in this README from the recorded results
 ```
 

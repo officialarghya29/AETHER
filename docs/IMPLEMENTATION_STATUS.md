@@ -100,7 +100,7 @@ comparison, non-root container, no secrets in the repository. Documented in `doc
 
 ## Phase 13 — Testing
 
-- `python -m pytest` → **98 passed**.
+- `python -m pytest` → ** passed**.
 - `python -m ruff check aether backend training experiments tests scripts` → clean.
 - Coverage of unit, integration, failure and API contract paths. No test was skipped or weakened to
   make the suite pass; three defects were found and fixed through failing tests instead.
@@ -109,7 +109,9 @@ comparison, non-root container, no secrets in the repository. Documented in `doc
 
 Full study in `artifacts/reports/benchmarks.json` and `BENCHMARKS.md`: clean performance, selective
 prediction, robustness over 10 families × 5 severities, drift detection rates, six routing policies,
-and six ablations. Protocol: test split for reporting only; routing data from the development split.
+six ablations, and an efficiency study (`make efficiency`) covering component, batch, feature,
+persistence and memory scopes. It found a per-prediction calibration-artifact read and duplicate
+risk-feature work; both are fixed and covered by tests. Protocol: test split for reporting only; routing data from the development split.
 
 ## Phase 15 — Documentation
 
@@ -136,7 +138,7 @@ orchestrated here*.
 single `main` branch.
 
 **Verified locally:** `ruff check` clean, `mypy aether` clean over 52 modules (pydantic plugin
-enabled), `pytest` 98 passing. **Not verified:** the workflow itself has not executed on GitHub
+enabled), `pytest`  passing. **Not verified:** the workflow itself has not executed on GitHub
 Actions from this machine.
 
 ## Honest summary
