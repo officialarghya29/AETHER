@@ -125,6 +125,11 @@ export default function RoutingIntelligence() {
                     <ActionPill action={String(item.action)} />
                     <span className="font-mono text-[11px] text-muted">{String(item.policy)}</span>
                     <span className="font-mono text-[11px] text-muted">risk {formatNumber(Number(item.risk), 3)}</span>
+                    {item.test_time_augmentation ? (
+                      <span className="rounded border border-accent/30 px-1.5 py-0.5 font-mono text-[10px] text-accent">
+                        mirror TTA
+                      </span>
+                    ) : null}
                   </div>
                   <span className="font-mono text-[10px] text-muted">{String(item.created_at)}</span>
                 </div>

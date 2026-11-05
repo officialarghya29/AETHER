@@ -209,6 +209,41 @@ def test_routing_endpoints(client):
     assert decisions.json()["items"][0]["explanation"]
 
 
+def test_predict_returns_the_calibrated_risk_budget(client, api_config):
+    from aether.routing.risk_control import threshold_artifact
+
+    threshold_artifact(
+        {"lightweight": {0.05: 0.9}, "advanced": {0.05: 0.9}},
+        api_config.artifacts_root / "calibration" / "acceptance_thresholds.json",
+    )
+    response = client.post(
+        "/api/v1/predict?error_budget=0.05",
+        files={"file": ("budget.png", _png_bytes(6), "image/png")},
+    )
+    assert response.status_code == 201, response.text
+    budget = response.json()["risk_budget"]
+    assert budget["requested_alpha"] == 0.05
+    assert budget["alpha"] == 0.05
+    assert budget["threshold"] == pytest.approx(0.9)
+    assert budget["tier"] in ("lightweight", "advanced")
+    assert budget["meets_threshold"] is False
+
+
+def test_missing_budget_artifact_is_reported_clearly(client):
+    response = client.post(
+        "/api/v1/predict?error_budget=0.05",
+        files={"file": ("budget.png", _png_bytes(7), "image/png")},
+    )
+    assert response.status_code == 422
+    assert "make stability" in response.json()["error"]["message"]
+
+
+def test_routing_timeline_exposes_the_tta_decision(client):
+    client.post("/api/v1/predict", files={"file": ("tta.png", _png_bytes(8), "image/png")})
+    item = client.get("/api/v1/routing/decisions").json()["items"][0]
+    assert item["test_time_augmentation"] is False
+
+
 def test_missing_report_returns_404(client):
     response = client.get("/api/v1/reports/benchmarks")
     assert response.status_code == 404

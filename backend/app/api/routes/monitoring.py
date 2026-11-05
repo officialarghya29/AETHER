@@ -71,8 +71,9 @@ def routing_decisions(
 ) -> dict:
     """Recent routing decisions with their explanations."""
     rows = list(
-        session.scalars(
-            select(RoutingDecisionModel)
+        session.execute(
+            select(RoutingDecisionModel, PredictionModel.decision)
+            .join(PredictionModel, PredictionModel.id == RoutingDecisionModel.prediction_id)
             .order_by(RoutingDecisionModel.created_at.desc())
             .limit(limit)
             .offset(offset)
@@ -90,9 +91,12 @@ def routing_decisions(
                 "explanation": row.explanation,
                 "reason_codes": row.reason_codes,
                 "utilities": row.utilities,
+                "test_time_augmentation": bool(
+                    (prediction_decision or {}).get("test_time_augmentation", False)
+                ),
                 "created_at": row.created_at.isoformat(),
             }
-            for row in rows
+            for row, prediction_decision in rows
         ],
         "total": total,
         "limit": limit,

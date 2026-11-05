@@ -17,6 +17,7 @@ export default function LiveInference() {
   const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [errorBudget, setErrorBudget] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onSelect = (file: File) => {
@@ -31,7 +32,9 @@ export default function LiveInference() {
     setBusy(true);
     setError(null);
     try {
-      setPrediction(await api.predict(file));
+      setPrediction(
+        await api.predict(file, errorBudget ? Number(errorBudget) : null),
+      );
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : 'Prediction failed.');
     } finally {
@@ -81,8 +84,22 @@ export default function LiveInference() {
               }}
             />
           </div>
-          <div className="mt-4 flex items-center justify-between text-xs text-muted">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
             <span className="truncate font-mono">{fileName || 'no file selected'}</span>
+            <label className="flex items-center gap-2">
+              <span className="label">error budget</span>
+              <select
+                className="rounded border border-line bg-raised px-2 py-1 font-mono text-[11px] text-ink"
+                value={errorBudget}
+                onChange={(event) => setErrorBudget(event.target.value)}
+                onKeyDown={(event) => event.stopPropagation()}
+              >
+                <option value="">none</option>
+                <option value="0.10">0.10</option>
+                <option value="0.05">0.05</option>
+                <option value="0.02">0.02</option>
+              </select>
+            </label>
             {busy && <span className="text-accent">inferring…</span>}
           </div>
           {error && <div className="mt-4"><ErrorState message={error} /></div>}
@@ -144,6 +161,34 @@ export default function LiveInference() {
                 </div>
               </div>
 
+              {prediction.risk_budget && (
+                <div
+                  className={`rounded-lg border p-3 ${
+                    prediction.risk_budget.meets_threshold
+                      ? 'border-ok/30 bg-ok/5'
+                      : 'border-warn/30 bg-warn/5'
+                  }`}
+                >
+                  <p className="label">risk budget</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-4 text-xs">
+                    <span className="font-mono">
+                      alpha {formatNumber(prediction.risk_budget.alpha, 2)} · threshold{' '}
+                      {formatNumber(prediction.risk_budget.threshold, 3)}
+                    </span>
+                    <span className="text-muted">
+                      confidence{' '}
+                      <span className="text-ink">{formatNumber(prediction.risk_budget.confidence, 3)}</span>
+                    </span>
+                    <span className={prediction.risk_budget.meets_threshold ? 'text-ok' : 'text-warn'}>
+                      {prediction.risk_budget.meets_threshold ? 'clears the budget' : 'below the budget'}
+                    </span>
+                    <span className="font-mono text-[10px] text-muted">
+                      {prediction.risk_budget.tier} tier
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {prediction.advanced && (
                 <div className="rounded-lg border border-warn/30 bg-warn/5 p-3">
                   <p className="label">advanced model comparison</p>
@@ -155,6 +200,11 @@ export default function LiveInference() {
                     <span className="text-muted">
                       disagreement <span className="text-ink">{formatNumber(Number(prediction.advanced.disagreement), 3)}</span>
                     </span>
+                    {prediction.advanced.test_time_augmentation ? (
+                      <span className="rounded border border-accent/30 px-2 py-0.5 font-mono text-[10px] text-accent">
+                        mirror TTA
+                      </span>
+                    ) : null}
                   </div>
                 </div>
               )}

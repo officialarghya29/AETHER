@@ -100,7 +100,7 @@ comparison, non-root container, no secrets in the repository. Documented in `doc
 
 ## Phase 13 — Testing
 
-- `python -m pytest` → **120 passed**.
+- `python -m pytest` → **123 passed**.
 - `python -m ruff check aether backend training experiments tests scripts` → clean.
 - Coverage of unit, integration, failure and API contract paths. No test was skipped or weakened to
   make the suite pass; three defects were found and fixed through failing tests instead.
@@ -138,7 +138,7 @@ orchestrated here*.
 single `main` branch.
 
 **Verified locally:** `ruff check` clean, `mypy aether` clean over 52 modules (pydantic plugin
-enabled), `pytest` 120 passing. **Not verified:** the workflow itself has not executed on GitHub
+enabled), `pytest` 123 passing. **Not verified:** the workflow itself has not executed on GitHub
 Actions from this machine.
 
 ## Honest summary

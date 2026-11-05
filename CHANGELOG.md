@@ -36,6 +36,10 @@ project adheres to semantic versioning.
 
 ### Added
 
+- **Error-budget panel and TTA audit trail**: the live-inference page can request a budget and
+  shows the calibrated threshold verdict, and the routing timeline marks decisions whose
+  escalated call paid for a drift-gated mirror pass.
+
 - **Drift-gated test-time augmentation**: `routing.tta_on_drift` (default on) means the
   mirror pass is paid only for escalated requests whose window the drift monitor flagged,
   measured at 0% of clean windows and 100% of severity-3 windows.

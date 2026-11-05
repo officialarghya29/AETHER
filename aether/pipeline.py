@@ -667,6 +667,12 @@ class ReliabilityPipeline:
             ),
         )
         elapsed = (time.perf_counter() - started) * 1000.0
+        decision_payload = decision.to_dict()
+        # Whether the escalated call paid for a mirror pass is decided after routing, so it is
+        # recorded on the decision record rather than invented before the call.
+        decision_payload["test_time_augmentation"] = bool(
+            advanced and advanced.get("test_time_augmentation")
+        )
         return InferenceResult(
             prediction_id=uuid.uuid4().hex,
             action=decision.action.value,
@@ -685,7 +691,7 @@ class ReliabilityPipeline:
                 "advanced": round(float(advanced["risk"]), 6) if advanced else None,
             },
             drift=drift.to_dict(),
-            decision=decision.to_dict(),
+            decision=decision_payload,
             diagnostics=[finding.to_dict() for finding in diagnostics],
             quality=quality.to_dict(),
             lightweight={

@@ -51,6 +51,7 @@ export interface Decision {
   risk: number;
   reason_codes: string[];
   explanation: string;
+  test_time_augmentation?: boolean;
   utilities?: Array<{
     action: string;
     utility: number;
@@ -58,6 +59,16 @@ export interface Decision {
     added_cost: number;
     feasible: boolean;
   }>;
+}
+
+export interface RiskBudget {
+  requested_alpha: number;
+  alpha: number;
+  threshold: number;
+  tier: string;
+  confidence: number;
+  meets_threshold: boolean;
+  generated_at: string;
 }
 
 export interface Prediction {
@@ -90,6 +101,7 @@ export interface Prediction {
   created_at: string;
   latency_ms: number;
   review_id?: string | null;
+  risk_budget?: RiskBudget | null;
 }
 
 export interface DriftStatus {

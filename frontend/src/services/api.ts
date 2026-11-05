@@ -94,10 +94,11 @@ export const api = {
     ),
   experiments: (limit = 50) => request<Paginated<Experiment>>(`/experiments?limit=${limit}`),
   report: (name: string) => request<BenchmarkReport | Record<string, unknown>>(`/reports/${name}`),
-  predict: async (file: File): Promise<Prediction> => {
+  predict: async (file: File, errorBudget?: number | null): Promise<Prediction> => {
     const form = new FormData();
     form.append('file', file);
-    return request<Prediction>('/predict', { method: 'POST', body: form });
+    const query = errorBudget ? `?error_budget=${errorBudget}` : '';
+    return request<Prediction>(`/predict${query}`, { method: 'POST', body: form });
   },
   predictBatch: async (files: File[]): Promise<Prediction[]> => {
     const form = new FormData();
