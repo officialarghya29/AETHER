@@ -322,11 +322,10 @@ documented around.
 | clean routing-dev | 0.9335 | 0.9435 | +0.0100 | 3.51 ms |
 | gaussian noise, severity 3 | 0.6350 | 0.6450 | +0.0100 | 3.55 ms |
 
-TTA averages identity and horizontal-flip logits on the escalated tier, costing one extra advanced
-forward pass for a +0.0100 clean / +0.0100
-corrupted accuracy change on routing data. Available as `routing.tta: true`, off by default:
-doubling escalation spend for a marginal, stream-dependent gain is the operator's call, not a
-silent default.
+TTA averages identity and horizontal-flip logits on the escalated tier. It buys +0.0100 accuracy
+clean and +0.0100 under corruption for one extra advanced forward pass, so it ships as
+`routing.tta: true` and stays off by default: doubling escalation spend for a marginal,
+stream-dependent gain is the operator's call, not a silent default.
 
 Both are reproduced by `make stability`, and a model returning non-finite logits now raises instead
 of being served.

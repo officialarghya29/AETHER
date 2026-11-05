@@ -224,16 +224,21 @@ def write_markdown(report: dict[str, Any]) -> None:
         "",
         "## Risk-controlled acceptance",
         "",
-        "| tier | alpha | threshold | coverage | selective error |",
-        "| --- | --- | --- | --- | --- |",
+        "| tier | alpha | threshold | coverage (clean) | selective error (clean) | "
+        "selective error (corrupted) |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
     for role, rows in report["risk_control"].items():
         for row in rows:
-            stream = row.get("routing_dev_clean", {})
-            error = stream.get("selective_error")
+            clean = row["routing_dev_clean"]
+            corrupted = row["routing_dev_corrupted"]
+            clean_error = clean.get("selective_error")
+            corrupted_error = corrupted.get("selective_error")
             lines.append(
                 f"| {role} | {row['alpha']:.2f} | {row['threshold']:.3f} | "
-                f"{stream.get('coverage', 0):.3f} | {'—' if error is None else f'{error:.3f}'} |"
+                f"{clean['coverage']:.3f} | "
+                f"{'—' if clean_error is None else f'{clean_error:.3f}'} | "
+                f"{'—' if corrupted_error is None else f'{corrupted_error:.3f}'} |"
             )
     lines += ["", "## Test-time augmentation (advanced tier)", ""]
     tta = report["tta"]
