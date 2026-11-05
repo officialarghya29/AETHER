@@ -20,8 +20,8 @@ routing-development data. Regenerate with `make stability`.
 
 | stream | identity | TTA | delta | mirror pass |
 | --- | --- | --- | --- | --- |
-| clean | 0.9335 | 0.9435 | +0.0100 | 2.54 ms |
-| corrupted_gaussian_noise_severity_3 | 0.6350 | 0.6450 | +0.0100 | 2.44 ms |
+| clean | 0.9335 | 0.9435 | +0.0100 | 3.51 ms |
+| corrupted_gaussian_noise_severity_3 | 0.6350 | 0.6450 | +0.0100 | 3.55 ms |
 
 Cost: one extra advanced forward pass per escalated request. The pipeline enables it with `routing.tta = true`.
 

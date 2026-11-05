@@ -56,7 +56,7 @@ def labels_for(splits: dict[str, np.ndarray], labels: np.ndarray, name: str) -> 
     return labels[splits[name]]
 
 
-def conformal_study(
+def risk_control_study(
     pipeline: ReliabilityPipeline,
     splits: dict[str, np.ndarray],
     images: np.ndarray,
@@ -171,9 +171,9 @@ def main() -> None:
     images = data.train_images
     labels = data.train_labels
 
-    print("== conformal thresholds ==")
-    conformal = conformal_study(pipeline, splits, images, labels)
-    for role, rows in conformal.items():
+    print("== risk-controlled thresholds ==")
+    risk_control = risk_control_study(pipeline, splits, images, labels)
+    for role, rows in risk_control.items():
         for row in rows:
             stream = row.get("routing_dev_clean", {})
             print(
@@ -206,7 +206,7 @@ def main() -> None:
             "torch": torch.__version__,
             "numpy": np.__version__,
         },
-        "conformal": conformal,
+        "risk_control": risk_control,
         "tta": tta,
     }
     REPORTS.mkdir(parents=True, exist_ok=True)
@@ -227,7 +227,7 @@ def write_markdown(report: dict[str, Any]) -> None:
         "| tier | alpha | threshold | coverage | selective error |",
         "| --- | --- | --- | --- | --- |",
     ]
-    for role, rows in report["conformal"].items():
+    for role, rows in report["risk_control"].items():
         for row in rows:
             stream = row.get("routing_dev_clean", {})
             error = stream.get("selective_error")

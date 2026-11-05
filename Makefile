@@ -14,7 +14,7 @@ help:
 	@echo "  make calibrate    fit temperatures and the learned risk models"
 	@echo "  make reference    freeze the drift reference window"
 	@echo "  make benchmarks   run the full reliability study"
-	@echo "  make stability    conformal thresholds and test-time augmentation"
+	@echo "  make stability    risk-controlled acceptance and test-time augmentation"
 	@echo "  make efficiency   measure latency, throughput and per-capability cost"
 	@echo "  make figures      render the README figures from recorded results"
 	@echo "  make test         run the test suite"

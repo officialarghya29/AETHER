@@ -3,7 +3,7 @@
 <p align="center">
   <img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-a855f7?style=flat-square" />
   <img alt="python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-22d3ee?style=flat-square" />
-  <img alt="tests 0 passing" src="https://img.shields.io/badge/tests-0%20passing-a3e635?style=flat-square" />
+  <img alt="tests 117 passing" src="https://img.shields.io/badge/tests-117%20passing-a3e635?style=flat-square" />
   <img alt="mypy clean" src="https://img.shields.io/badge/mypy-52%20modules%20clean-22d3ee?style=flat-square" />
   <img alt="torch 2.13 cpu" src="https://img.shields.io/badge/torch-2.13%20%C2%B7%20cpu-fbbf24?style=flat-square" />
 </p>
@@ -287,7 +287,6 @@ a weak one. Occasionally AETHER pays for escalation and then still abstains, bec
 turned out to be less certain than the estimate implied. That is visible in the cost column, and it is
 the correct behaviour — the alternative is to force an answer the evidence does not support.
 
-
 ## stability — guarantees, not optimism
 
 ### risk-controlled acceptance
@@ -320,8 +319,8 @@ documented around.
 
 | stream | identity | with mirror TTA | delta | extra pass |
 | --- | --- | --- | --- | --- |
-| clean routing-dev | 0.9335 | 0.9435 | +0.0100 | 2.54 ms |
-| gaussian noise, severity 3 | 0.6350 | 0.6450 | +0.0100 | 2.44 ms |
+| clean routing-dev | 0.9335 | 0.9435 | +0.0100 | 3.51 ms |
+| gaussian noise, severity 3 | 0.6350 | 0.6450 | +0.0100 | 3.55 ms |
 
 TTA averages identity and horizontal-flip logits on the escalated tier, costing one extra advanced
 forward pass for a +0.0100 clean / +0.0100
@@ -428,7 +427,7 @@ database, never hardcoded.
 | serving | FastAPI, SQLAlchemy 2, Alembic, SQLite / PostgreSQL |
 | dashboard | React 18, TypeScript, Vite, recharts, Tailwind |
 | ops | Docker Compose, nginx, GitHub Actions |
-| quality | pytest (0 passing), ruff clean, mypy clean over `aether/` (52 modules) |
+| quality | pytest (117 passing), ruff clean, mypy clean over `aether/` (52 modules) |
 
 ## quickstart
 
